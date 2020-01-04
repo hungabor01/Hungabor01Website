@@ -1,5 +1,3 @@
-using System;
-
 namespace Hungabor01Website.Models
 {
   public class ErrorViewModel
