@@ -36,7 +36,9 @@ namespace Hungabor01Website
       }
       else
       {
-        app.UseExceptionHandler("/Home/Error");
+        app.UseExceptionHandler("/Error/UnhandledError");
+        app.UseStatusCodePagesWithReExecute("/Error/ErrorCodeHandler/{0}");        
+
         app.UseHsts();
       }
 
