@@ -15,19 +15,22 @@ namespace Hungabor01Website
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
       Host.CreateDefaultBuilder(args)
-        .ConfigureLogging(logging => logging.AddAzureWebAppDiagnostics())
-          .ConfigureServices(serviceCollection => serviceCollection
-            .Configure<AzureFileLoggerOptions>(options =>
-            {
-              options.FileName = "azure-diagnostics-";
-              options.FileSizeLimit = 50 * 1024;
-              options.RetainedFileCountLimit = 5;
-            })
-            .Configure<AzureBlobLoggerOptions>(options =>
-            {
-              options.BlobName = "log.txt";
-            })
-          )
+        .ConfigureLogging(logging =>
+        { 
+          logging.AddAzureWebAppDiagnostics();
+
+          //These are overridden by the Azure, so actually don't do aníthing in production
+          logging.SetMinimumLevel(LogLevel.Information);
+          logging.AddFilter("System", LogLevel.Warning);
+          logging.AddFilter("Microsoft", LogLevel.Warning);
+        })
+        .ConfigureServices(serviceCollection =>
+        {
+          serviceCollection.Configure<AzureBlobLoggerOptions>(options =>
+          {
+            options.BlobName = "log.txt";
+          });
+        })
         .ConfigureWebHostDefaults(webBuilder =>
         {
           webBuilder.UseStartup<Startup>();
