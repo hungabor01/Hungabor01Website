@@ -7,6 +7,10 @@
 
   <environment include="Development">
     <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/Navigation.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
   </environment>
   <environment exclude="Development">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -16,48 +20,153 @@
           asp-fallback-test-class="sr-only" asp-fallback-test-property="position"
           asp-fallback-test-value="absolute"
           asp-suppress-fallback-integrity="true" />
-  </environment>
-
-  <environment include="Development">
-    <link rel="stylesheet" href="~/css/site.css" />
-  </environment>
-  <environment exclude="Development">
-    <link rel="stylesheet" href="~/css/site.min.css" />
+    <link href="~/css/site.min.css" rel="stylesheet" />
+    <link href="~/css/Navigation.min.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
   </environment>
 </head>
 <body>
-  <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-      <div class="container">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Hungabor01Website</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-          <ul class="navbar-nav flex-grow-1">
-            <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+  <!-- start of page wrapper -->
+  <div class="page-wrapper chiller-theme toggled">
+
+    <!-- start of minimized navigation -->
+    <a id="show-sidebar" class="btn btn-sm btn-dark">
+      <i class="fas fa-bars"></i>
+    </a>
+    <!-- end of minimized navigation -->
+
+    <!-- start of navigation -->
+    <nav id="sidebar" class="sidebar-wrapper">
+      <div class="sidebar-content">
+
+        <!-- start of nav header -->
+        <div class="sidebar-brand">
+          <a asp-controller="Home" asp-action="Index">Hungabor01Website</a>
+          <div id="close-sidebar">
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
+        <!-- end of nav header -->
+
+				<div class="fixed-items"> 
+          <!-- start of account details -->
+          <div class="sidebar-header">
+            <div class="user-pic">
+              <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
+            </div>
+            <div class="user-info">
+              <span class="user-name">
+                Gábor
+                <strong>Gróf</strong>
+              </span>
+              <span class="user-role">Administrator</span>
+              <span class="user-status">
+                <i class="fa fa-circle"></i>
+                <span>Online</span>
+              </span>
+            </div>
+          </div>
+          <!-- end of account details -->
+
+          <!-- start of account icons -->
+          <div class="sidebar-accounticons">
+            <a href="#">
+              <i class="fa fa-bell"></i>
+              <span class="badge badge-pill badge-warning notification">3</span>
+            </a>
+            <a href="#">
+              <i class="fa fa-envelope"></i>
+              <span class="badge badge-pill badge-success notification">7</span>
+            </a>
+            <a href="#">
+              <i class="fa fa-cog"></i>
+              <span class="badge-sonar"></span>
+            </a>
+            <a href="#">
+              <i class="fa fa-power-off"></i>
+            </a>
+          </div>
+          <!-- end of account icons -->
+
+          <!-- start of search -->
+          <div class="sidebar-search">
+            <div>
+              <div class="input-group">
+                <input type="text" class="form-control search-menu" placeholder="Search...">
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end of search -->
+        </div>
+        <!-- start of navigation menu -->
+        <div class="sidebar-menu">
+          <ul>
+            <li class="header-menu">
+              <span>General</span>
             </li>
-            <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <li class="sidebar-dropdown">
+              <a href="#">
+                <i class="fa fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+                <span class="badge badge-pill badge-warning">New</span>
+              </a>
+              <div class="sidebar-submenu">
+                <ul>
+                  <li>
+                    <a href="#">
+                      Dashboard 1
+                      <span class="badge badge-pill badge-success">Pro</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">Dashboard 2</a>
+                  </li>
+                  <li>
+                    <a href="#">Dashboard 3</a>
+                  </li>
+                </ul>
+              </div>
+            </li>            
+            <li>
+              <a href="#">
+                <i class="fa fa-book"></i>
+                <span>Documentation</span>
+                <span class="badge badge-pill badge-primary">Beta</span>
+              </a>
             </li>
           </ul>
         </div>
+        <!-- end of navigation menu -->
       </div>
-    </nav>
-  </header>
-  <div class="container">
-    <main role="main" class="pb-3">
-      @RenderBody()
-    </main>
-  </div>
 
+    </nav>
+    <!-- end of navigation -->
+
+    <!-- start of page-content -->
+    <main class="page-content">
+      <div class="container-fluid">
+        @RenderBody()
+      </div>
+    </main>
+    <!-- end of page-content -->
+
+  </div>
+  <!-- end of page wrapper -->
+
+  <!-- start of footer -->
   <footer class="border-top footer text-muted">
     <div class="container">
-      &copy; 2020 - Hungabor01Website - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+      &copy; 2020 - Hungabor01Website - <a asp-controller="Home" asp-action="Privacy">About and Privacy</a>
     </div>
   </footer>
+  <!-- end of footer -->
+
   <script src="~/lib/jquery/dist/jquery.min.js"></script>
   <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
   <environment include="Development">
@@ -66,6 +175,9 @@
   <environment exclude="Development">
     <script src="~/js/site.min.js" asp-append-version="true"></script>
   </environment>
-    @RenderSection("Scripts", required: false)
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  @RenderSection("Scripts", required: false)
 </body>
 </html>
