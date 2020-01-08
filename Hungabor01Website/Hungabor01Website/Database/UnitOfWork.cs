@@ -3,7 +3,7 @@
 namespace Hungabor01Website.Database
 {
   /// <summary>
-  /// The main component of the database connection. It represents a connection to the database. Add the repository interfaces here.
+  /// The main component of the database connection. It represents a connection to the database. Add the repository interfaces here
   /// </summary>
   public class UnitOfWork : IUnitOfWork
   {
@@ -18,7 +18,7 @@ namespace Hungabor01Website.Database
       this.context = context;
       TestEntities = exercises;
 
-      //Must initailize with the context to work.
+      //Must initailize the repositories with the context to work
       TestEntities.InitRepository(context);
     }
 
@@ -28,7 +28,7 @@ namespace Hungabor01Website.Database
     }
 
     /// <summary>
-    /// Releases the context object.
+    /// Releases the context object
     /// </summary>
     public void Dispose()
     {

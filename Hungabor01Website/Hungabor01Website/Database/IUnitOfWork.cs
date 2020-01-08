@@ -4,16 +4,16 @@ using System;
 namespace Hungabor01Website.Database
 {  
   /// <summary>
-   /// Interface of the main database connection component. It represents a connection to the database. Add the repository interfaces here.
-   /// </summary>
+  /// Interface of the main database connection component. It represents a connection to the database. Add the repository interfaces here
+  /// </summary>
   public interface IUnitOfWork : IDisposable
   {
     public ITestEntityRepository TestEntities { get; }
 
     /// <summary>
-    /// Commits the changes to the database.
+    /// Commits the changes to the database
     /// </summary>
-    /// <returns>Number of the modified entries.</returns>
+    /// <returns>Number of the modified entries</returns>
     int Complete();
   }
 }

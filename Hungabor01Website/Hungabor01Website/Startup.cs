@@ -11,8 +11,14 @@ using System;
 
 namespace Hungabor01Website
 {
+  /// <summary>
+  /// Initialize the web server
+  /// </summary>
   public class Startup
   {
+    /// <summary>
+    /// Configurations, coming from the appsettings.json
+    /// </summary>
     public IConfiguration Configuration { get; }
 
     public Startup(IConfiguration configuration)
@@ -20,10 +26,16 @@ namespace Hungabor01Website
       Configuration = configuration;
     }    
 
+    /// <summary>
+    /// Setup the dependency injection here
+    /// </summary>
+    /// <param name="services">The dependency injection container</param>
     public void ConfigureServices(IServiceCollection services)
     {
+      //MVC
       services.AddControllersWithViews();
 
+      //Https
       services.AddHsts(options =>
       {
         options.Preload = true;
@@ -31,6 +43,7 @@ namespace Hungabor01Website
         options.MaxAge = TimeSpan.FromDays(365);
       });
 
+      //Database
       //UnitOfWork
       services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -44,12 +57,17 @@ namespace Hungabor01Website
                 options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextAzure")));
       else
         services.AddDbContext<WebsiteDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextLoacl")));
+                options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextLocal")));
 
       //Entities
       services.AddScoped<TestEntity>();
     }
 
+    /// <summary>
+    /// Setup the request processing pipeline
+    /// </summary>
+    /// <param name="app">Service of the application</param>
+    /// <param name="env">Service of the environment</param>
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       if (env.IsDevelopment())
