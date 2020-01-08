@@ -1,5 +1,9 @@
+using Hungabor01Website.Database;
+using Hungabor01Website.Database.Entities;
+using Hungabor01Website.Database.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +30,24 @@ namespace Hungabor01Website
         options.IncludeSubDomains = true;
         options.MaxAge = TimeSpan.FromDays(365);
       });
+
+      //UnitOfWork
+      services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+      //Repositories
+      services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+      services.AddScoped<ITestEntityRepository, TestEntityRepository>();
+
+      //DbContext
+      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+        services.AddDbContext<WebsiteDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextAzure")));
+      else
+        services.AddDbContext<WebsiteDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextLoacl")));
+
+      //Entities
+      services.AddScoped<TestEntity>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
