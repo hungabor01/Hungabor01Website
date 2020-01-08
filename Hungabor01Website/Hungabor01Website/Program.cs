@@ -6,20 +6,32 @@ using Microsoft.Extensions.Logging.AzureAppServices;
 
 namespace Hungabor01Website
 {
+  /// <summary>
+  /// Entry point of the application 
+  /// </summary>
   public class Program
   {
+    /// <summary>
+    /// Main method of the application
+    /// </summary>
+    /// <param name="args">Command line arguments</param>
     public static void Main(string[] args)
     {
       CreateHostBuilder(args).Build().Run();
     }
 
+    /// <summary>
+    /// Configures and makes the application to a web werver
+    /// </summary>
+    /// <param name="args">Command line arguments passed from the Main method</param>
+    /// <returns></returns>
     public static IHostBuilder CreateHostBuilder(string[] args) =>
       Host.CreateDefaultBuilder(args)
         .ConfigureLogging(logging =>
         { 
           logging.AddAzureWebAppDiagnostics();
 
-          //These are overridden by the Azure, so actually don't do aníthing in production
+          //These are overridden by the Azure portal, so actually they don't do anything in production
           logging.SetMinimumLevel(LogLevel.Information);
           logging.AddFilter("System", LogLevel.Warning);
           logging.AddFilter("Microsoft", LogLevel.Warning);
