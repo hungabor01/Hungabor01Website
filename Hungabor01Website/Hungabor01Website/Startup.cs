@@ -3,6 +3,7 @@ using Hungabor01Website.Database.Entities;
 using Hungabor01Website.Database.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +43,9 @@ namespace Hungabor01Website
         options.IncludeSubDomains = true;
         options.MaxAge = TimeSpan.FromDays(365);
       });
+
+      //Adds the user and role object to the db context
+      services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<WebsiteDbContext>();
 
       //Database
       //UnitOfWork

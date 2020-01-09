@@ -1,5 +1,6 @@
 ﻿using Hungabor01Website.Database.Configuration;
 using Hungabor01Website.Database.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hungabor01Website.Database
@@ -7,7 +8,7 @@ namespace Hungabor01Website.Database
   /// <summary>
   /// The database object
   /// </summary>
-  public class WebsiteDbContext : DbContext
+  public class WebsiteDbContext : IdentityDbContext
   {
     /// <summary>
     /// Initializes the database component with the given connection options
