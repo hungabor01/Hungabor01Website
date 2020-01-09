@@ -1,4 +1,5 @@
 ﻿using Hungabor01Website.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,7 +14,9 @@ namespace Hungabor01Website.Controllers
     private readonly UserManager<IdentityUser> userManager;
     private readonly SignInManager<IdentityUser> signInManager;
 
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public AccountController(
+      UserManager<IdentityUser> userManager,
+      SignInManager<IdentityUser> signInManager)
     {
       this.userManager = userManager;
       this.signInManager = signInManager;
@@ -22,8 +25,9 @@ namespace Hungabor01Website.Controllers
     /// <summary>
     /// Registration get method
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Register view</returns>
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Register()
     {
       return View();
@@ -35,6 +39,7 @@ namespace Hungabor01Website.Controllers
     /// <param name="model">ViewModel of the registration</param>
     /// <returns>Asynchronous regisrtation redirects to the home view</returns>
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
       if (ModelState.IsValid)
@@ -63,10 +68,58 @@ namespace Hungabor01Website.Controllers
     }
 
     /// <summary>
+    /// Login get method
+    /// </summary>
+    /// <returns>Login view</returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Login()
+    {
+      return View();
+    }
+
+    /// <summary>
+    /// Login post method
+    /// </summary>
+    /// <param name="model">ViewModel of the login</param>
+    /// <returns>Asynchronous login brings to the previously requested url</returns>
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+    {
+      if (ModelState.IsValid)
+      {
+        var username = model.UsernameOrEmail;
+        var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
+        if (user != null)
+        {
+          username = user.UserName;
+        }
+
+        var result = await signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, false);
+
+        if (result.Succeeded)
+        {
+          if (Url.IsLocalUrl(returnUrl))
+          {
+            return Redirect(returnUrl);
+          }
+          else
+          {
+            return RedirectToAction("index", "home");
+          }
+        }
+
+        ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+      }
+
+      return View(model);
+    }
+
+    /// <summary>
     /// Logout action
     /// </summary>
-    /// <returns>Asynchronous logout to the home view</returns>
-    [HttpPost]
+    /// <returns>Asynchronous logout to the home view</returns> 
     public async Task<IActionResult> Logout()
     {
       await signInManager.SignOutAsync();
