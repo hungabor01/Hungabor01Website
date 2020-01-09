@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -8,7 +11,7 @@
   <environment include="Development">
     <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
-    <link href="~/css/Navigation.css" rel="stylesheet" />
+    <link href="~/css/navigation.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/fontawesome.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
   </environment>
@@ -21,7 +24,7 @@
           asp-fallback-test-value="absolute"
           asp-suppress-fallback-integrity="true" />
     <link href="~/css/site.min.css" rel="stylesheet" />
-    <link href="~/css/Navigation.min.css" rel="stylesheet" />
+    <link href="~/css/navigation.min.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
   </environment>
@@ -29,17 +32,14 @@
 <body>
   <!-- start of page wrapper -->
   <div class="page-wrapper chiller-theme toggled">
-
     <!-- start of minimized navigation -->
     <a id="show-sidebar" class="btn btn-sm btn-dark">
       <i class="fas fa-bars"></i>
     </a>
     <!-- end of minimized navigation -->
-
     <!-- start of navigation -->
     <nav id="sidebar" class="sidebar-wrapper">
       <div class="sidebar-content">
-
         <!-- start of nav header -->
         <div class="sidebar-brand">
           <a asp-controller="Home" asp-action="Index">Hungabor01Website</a>
@@ -48,62 +48,72 @@
           </div>
         </div>
         <!-- end of nav header -->
-
-				<div class="fixed-items"> 
-          <!-- start of account details -->
-          <div class="sidebar-header">
-            <div class="user-pic">
-              <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
+        <div class="fixed-items">
+         @if (SignInManager.IsSignedIn(User))
+          {
+            <!-- start of account details -->
+            <div class="sidebar-header">
+              <div class="user-pic">
+                <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
+              </div>
+              <div class="user-info">
+                <span class="user-name">                  
+                  <strong>@User.Identity.Name</strong>
+                </span>
+                <span class="user-role">Administrator</span>
+                <span class="user-status">
+                  <i class="fa fa-circle"></i>
+                  <span>Online</span>
+                </span>
+              </div>
             </div>
-            <div class="user-info">
-              <span class="user-name">
-                Gábor
-                <strong>Gróf</strong>
-              </span>
-              <span class="user-role">Administrator</span>
-              <span class="user-status">
-                <i class="fa fa-circle"></i>
-                <span>Online</span>
-              </span>
+            <!-- end of account details -->
+            <!-- start of account icons -->
+            <div class="sidebar-accounticons">
+              <a href="#">
+                <i class="fa fa-bell"></i>
+                <span class="badge badge-pill badge-warning notification">3</span>
+              </a>
+              <a href="#">
+                <i class="fa fa-envelope"></i>
+                <span class="badge badge-pill badge-success notification">7</span>
+              </a>
+              <a href="#">
+                <i class="fa fa-cog"></i>
+                <span class="badge-sonar"></span>
+              </a>
+              <a asp-controller="account" asp-action="logout">
+                <i class="fa fa-power-off"></i>
+              </a>
             </div>
-          </div>
-          <!-- end of account details -->
-
-          <!-- start of account icons -->
-          <div class="sidebar-accounticons">
-            <a href="#">
-              <i class="fa fa-bell"></i>
-              <span class="badge badge-pill badge-warning notification">3</span>
-            </a>
-            <a href="#">
-              <i class="fa fa-envelope"></i>
-              <span class="badge badge-pill badge-success notification">7</span>
-            </a>
-            <a href="#">
-              <i class="fa fa-cog"></i>
-              <span class="badge-sonar"></span>
-            </a>
-            <a href="#">
-              <i class="fa fa-power-off"></i>
-            </a>
-          </div>
-          <!-- end of account icons -->
-
-          <!-- start of search -->
-          <div class="sidebar-search">
+            <!-- end of account icons -->
+					}
+					else
+          {
             <div>
-              <div class="input-group">
-                <input type="text" class="form-control search-menu" placeholder="Search...">
-                <div class="input-group-append">
-                  <span class="input-group-text">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                  </span>
+              <a class="nav-link" asp-controller="account" asp-action="login">
+                Login
+              </a>
+              <a class="nav-link" asp-controller="account" asp-action="register">
+                Register
+              </a>
+            </div>
+          }
+            <!-- start of search -->
+            <div class="sidebar-search">
+              <div>
+                <div class="input-group">
+                  <input type="text" class="form-control search-menu" placeholder="Search...">
+                  <div class="input-group-append">
+                    <span class="input-group-text">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
+            <!-- end of search -->
           </div>
-          <!-- end of search -->
-        </div>
         <!-- start of navigation menu -->
         <div class="sidebar-menu">
           <ul>
@@ -132,7 +142,7 @@
                   </li>
                 </ul>
               </div>
-            </li>            
+            </li>
             <li>
               <a href="#">
                 <i class="fa fa-book"></i>
@@ -144,10 +154,8 @@
         </div>
         <!-- end of navigation menu -->
       </div>
-
     </nav>
     <!-- end of navigation -->
-
     <!-- start of page-content -->
     <main class="page-content">
       <div class="container-fluid">
@@ -155,10 +163,8 @@
       </div>
     </main>
     <!-- end of page-content -->
-
   </div>
   <!-- end of page wrapper -->
-
   <!-- start of footer -->
   <footer class="border-top footer text-muted">
     <div class="container">
@@ -167,7 +173,9 @@
   </footer>
   <!-- end of footer -->
 
-  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script src="~/lib/jquery/jquery.min.js"></script>
+  <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+  <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
   <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
   <environment include="Development">
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -175,9 +183,6 @@
   <environment exclude="Development">
     <script src="~/js/site.min.js" asp-append-version="true"></script>
   </environment>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   @RenderSection("Scripts", required: false)
 </body>
 </html>

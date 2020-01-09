@@ -1,0 +1,76 @@
+﻿using Hungabor01Website.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace Hungabor01Website.Controllers
+{
+  /// <summary>
+  /// Manages the account related actions
+  /// </summary>
+  public class AccountController : Controller
+  {
+    private readonly UserManager<IdentityUser> userManager;
+    private readonly SignInManager<IdentityUser> signInManager;
+
+    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    {
+      this.userManager = userManager;
+      this.signInManager = signInManager;
+    }
+
+    /// <summary>
+    /// Registration get method
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public IActionResult Register()
+    {
+      return View();
+    }
+
+    /// <summary>
+    /// Registration post method
+    /// </summary>
+    /// <param name="model">ViewModel of the registration</param>
+    /// <returns>Asynchronous regisrtation redirects to the home view</returns>
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterViewModel model)
+    {
+      if (ModelState.IsValid)
+      {
+        var user = new IdentityUser
+        {
+          UserName = model.Username,
+          Email = model.Email
+        };
+
+        var result = await userManager.CreateAsync(user, model.Password);
+
+        if (result.Succeeded)
+        {
+          await signInManager.SignInAsync(user, isPersistent: false);
+          return RedirectToAction("index", "home");
+        }
+
+        foreach (var error in result.Errors)
+        {
+          ModelState.AddModelError(string.Empty, error.Description);
+        }
+      }
+
+      return View(model);
+    }
+
+    /// <summary>
+    /// Logout action
+    /// </summary>
+    /// <returns>Asynchronous logout to the home view</returns>
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+      await signInManager.SignOutAsync();
+      return RedirectToAction("index", "home");
+    }
+  }
+}
