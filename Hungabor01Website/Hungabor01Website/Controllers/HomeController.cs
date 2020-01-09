@@ -1,4 +1,5 @@
 ﻿using Hungabor01Website.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -21,6 +22,7 @@ namespace Hungabor01Website.Controllers
     /// Action to handle the home page
     /// </summary>
     /// <returns>The Index view</returns>
+    [AllowAnonymous]
     public IActionResult Index()
     {
       using (var unitOfWork = serviceProvider.GetService<IUnitOfWork>())
@@ -39,6 +41,7 @@ namespace Hungabor01Website.Controllers
     /// Action to handle the privacy page
     /// </summary>
     /// <returns>The Privacy view</returns>
+    [AllowAnonymous]
     public IActionResult Privacy()
     {      
       return View();

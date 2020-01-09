@@ -1,9 +1,11 @@
 using Hungabor01Website.Database;
 using Hungabor01Website.Database.Entities;
 using Hungabor01Website.Database.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +36,11 @@ namespace Hungabor01Website
     public void ConfigureServices(IServiceCollection services)
     {
       //MVC
-      services.AddControllersWithViews();
+      services.AddControllersWithViews(config =>
+      {
+        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+        config.Filters.Add(new AuthorizeFilter(policy));
+      });
 
       //Https
       services.AddHsts(options =>
@@ -72,6 +78,7 @@ namespace Hungabor01Website
         options.Password.RequiredLength = 10;
         options.Password.RequiredUniqueChars = 3;
         options.Password.RequireNonAlphanumeric = false;
+        options.User.RequireUniqueEmail = true;
       });
     }
 
@@ -101,6 +108,7 @@ namespace Hungabor01Website
       app.UseRouting();
 
       app.UseAuthorization();
+      app.UseAuthentication();
 
       app.UseEndpoints(endpoints =>
       {
