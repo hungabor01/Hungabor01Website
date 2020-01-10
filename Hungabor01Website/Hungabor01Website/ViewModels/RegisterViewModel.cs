@@ -2,6 +2,9 @@
 
 namespace Hungabor01Website.ViewModels
 {
+  /// <summary>
+  /// Viewmodel to transfer data from Register action to the view
+  /// </summary>
   public class RegisterViewModel
   {
     /// <summary>
@@ -11,7 +14,7 @@ namespace Hungabor01Website.ViewModels
     public string Username { get; set; }
 
     /// <summary>
-    /// Email of the user
+    /// Email of the user (unique)
     /// </summary>
     [Required]
     [EmailAddress]
