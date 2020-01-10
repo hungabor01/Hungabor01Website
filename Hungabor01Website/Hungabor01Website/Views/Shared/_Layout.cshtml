@@ -49,7 +49,7 @@
         </div>
         <!-- end of nav header -->
         <div class="fixed-items">
-         @if (SignInManager.IsSignedIn(User))
+          @if (SignInManager.IsSignedIn(User))
           {
             <!-- start of account details -->
             <div class="sidebar-header">
@@ -57,7 +57,7 @@
                 <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
               </div>
               <div class="user-info">
-                <span class="user-name">                  
+                <span class="user-name">
                   <strong>@User.Identity.Name</strong>
                 </span>
                 <span class="user-role">Administrator</span>
@@ -87,8 +87,8 @@
               </a>
             </div>
             <!-- end of account icons -->
-					}
-					else
+          }
+          else
           {
             <div>
               <a class="nav-link" asp-controller="account" asp-action="login">
@@ -99,21 +99,21 @@
               </a>
             </div>
           }
-            <!-- start of search -->
-            <div class="sidebar-search">
-              <div>
-                <div class="input-group">
-                  <input type="text" class="form-control search-menu" placeholder="Search...">
-                  <div class="input-group-append">
-                    <span class="input-group-text">
-                      <i class="fa fa-search" aria-hidden="true"></i>
-                    </span>
-                  </div>
+          <!-- start of search -->
+          <div class="sidebar-search">
+            <div>
+              <div class="input-group">
+                <input type="text" class="form-control search-menu" placeholder="Search...">
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </span>
                 </div>
               </div>
             </div>
-            <!-- end of search -->
           </div>
+          <!-- end of search -->
+        </div>
         <!-- start of navigation menu -->
         <div class="sidebar-menu">
           <ul>
@@ -175,7 +175,7 @@
 
   <script src="~/lib/jquery/jquery.min.js"></script>
   <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
-  <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+  <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
   <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
   <environment include="Development">
     <script src="~/js/site.js" asp-append-version="true"></script>

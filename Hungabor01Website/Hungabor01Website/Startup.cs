@@ -15,18 +15,15 @@ using System;
 namespace Hungabor01Website
 {
   /// <summary>
-  /// Initialize the web server
+  /// Initialization of the web server
   /// </summary>
   public class Startup
   {
-    /// <summary>
-    /// Configurations, coming from the appsettings.json
-    /// </summary>
-    public IConfiguration Configuration { get; }
+    private readonly IConfiguration configuration;
 
     public Startup(IConfiguration configuration)
     {
-      Configuration = configuration;
+      this.configuration = configuration;
     }    
 
     /// <summary>
@@ -50,9 +47,6 @@ namespace Hungabor01Website
         options.MaxAge = TimeSpan.FromDays(365);
       });
 
-      //Adds the user and role object to the db context
-      services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<WebsiteDbContext>();
-
       //Database
       //UnitOfWork
       services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -64,13 +58,16 @@ namespace Hungabor01Website
       //DbContext
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
         services.AddDbContext<WebsiteDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextAzure")));
+                options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")));
       else
         services.AddDbContext<WebsiteDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("WebsiteDbContextLocal")));
+                options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")));
 
       //Entities
       services.AddScoped<TestEntity>();
+
+      //Adds the user and role object to the db context
+      services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<WebsiteDbContext>();
 
       //Password complexity
       services.Configure<IdentityOptions>(options =>
@@ -83,7 +80,7 @@ namespace Hungabor01Website
     }
 
     /// <summary>
-    /// Setup the request processing pipeline
+    /// Setup of the request processing pipeline
     /// </summary>
     /// <param name="app">Service of the application</param>
     /// <param name="env">Service of the environment</param>
