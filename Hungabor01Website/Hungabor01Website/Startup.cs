@@ -104,7 +104,6 @@ namespace Hungabor01Website
 
       app.UseRouting();
 
-      app.UseAuthorization();
       app.UseAuthentication();
 
       app.UseEndpoints(endpoints =>
