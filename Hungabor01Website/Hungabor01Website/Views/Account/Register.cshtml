@@ -4,33 +4,72 @@
   ViewBag.Title = "User Registration";
 }
 
-<h1>User Registration</h1>
+@section Styles {
+  <environment include="Development">
+    <link href="~/css/login_registration.css" rel="stylesheet" />
+  </environment>
+  <environment exclude="Development">
+    <link href="~/css/login_registration.min.css" rel="stylesheet" />
+  </environment>
+}
 
-<div class="row">
-  <div class="col-md-12">
-    <form method="post">
-      <div asp-validation-summary="All" class="text-danger"></div>
-      <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
+<div class="d-flex justify-content-center h-100">
+  <div class="card">
+    <!--start of header-->
+    <div class="card-header">
+      <h3>Register</h3>
+      <div class="d-flex justify-content-end social_icon">
+        <span><i class="fab fa-facebook-square"></i></span>
+        <span><i class="fab fa-google-plus-square"></i></span>
+        <span><i class="fab fa-twitter-square"></i></span>
+      </div>
+    </div>
+    <!--end of header-->
+    <!--start of body-->
+    <div class="card-body">
+      <form method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <!--start of username-->
         <span asp-validation-for="Username" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
+        <div class="input-group form-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+          </div>
+          <input type="text" class="form-control" placeholder="username" asp-for="Username">
+        </div>
+        <!--end of username-->
+        <!--start of email-->
         <span asp-validation-for="Email" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
+        <div class="input-group form-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-at"></i></span>
+          </div>
+          <input type="text" class="form-control" placeholder="email" asp-for="Email">
+        </div>
+        <!--end of email-->
+        <!--start of password-->
         <span asp-validation-for="Password" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" class="form-control" />
+        <div class="input-group form-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-key"></i></span>
+          </div>
+          <input type="password" class="form-control" placeholder="password" asp-for="Password">
+        </div>
+        <!--end of password-->
+        <!--start of confirm password-->
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-      </div>
-      <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+        <div class="input-group form-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-key"></i></span>
+          </div>
+          <input type="password" class="form-control" placeholder="confirm password" asp-for="ConfirmPassword">
+        </div>
+        <!--end of confirm password-->
+        <div class="form-group">
+          <input type="submit" value="Register" class="btn float-right login_btn">
+        </div>
+      </form>
+    </div>
+    <!--end of body-->
   </div>
 </div>

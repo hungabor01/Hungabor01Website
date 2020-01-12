@@ -8,6 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@ViewData["Title"] - Hungabor01Website</title>
 
+  <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
+
   <environment include="Development">
     <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
@@ -28,6 +30,8 @@
     <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
   </environment>
+
+  @RenderSection("Styles", required: false)
 </head>
 <body>
   <!-- start of page wrapper -->
@@ -49,7 +53,7 @@
         </div>
         <!-- end of nav header -->
         <div class="fixed-items">
-          @if (SignInManager.IsSignedIn(User))
+         @if (SignInManager.IsSignedIn(User))
           {
             <!-- start of account details -->
             <div class="sidebar-header">
@@ -92,9 +96,11 @@
           {
             <div>
               <a class="nav-link" asp-controller="account" asp-action="login">
+                <i class="fas fa-sign-in-alt"></i>
                 Login
               </a>
               <a class="nav-link" asp-controller="account" asp-action="register">
+                <i class="fas fa-user-plus"></i>
                 Register
               </a>
             </div>
@@ -157,7 +163,7 @@
     </nav>
     <!-- end of navigation -->
     <!-- start of page-content -->
-    <main class="page-content">
+    <main class="page-content toggled">
       <div class="container-fluid">
         @RenderBody()
       </div>
@@ -166,7 +172,7 @@
   </div>
   <!-- end of page wrapper -->
   <!-- start of footer -->
-  <footer class="border-top footer text-muted">
+  <footer class="border-top footer text-muted toggled">
     <div class="container">
       &copy; 2020 - Hungabor01Website - <a asp-controller="Home" asp-action="Privacy">About and Privacy</a>
     </div>
