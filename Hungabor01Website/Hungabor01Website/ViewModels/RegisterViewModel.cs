@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Hungabor01Website.ViewModels
 {
@@ -11,6 +12,7 @@ namespace Hungabor01Website.ViewModels
     /// Username of the user (unique)
     /// </summary>
     [Required]
+    [Remote(action: "IsUsernameInUse", controller: "Account")]
     public string Username { get; set; }
 
     /// <summary>
@@ -18,6 +20,7 @@ namespace Hungabor01Website.ViewModels
     /// </summary>
     [Required]
     [EmailAddress]
+    [Remote(action: "IsEmailInUse", controller: "Account")]
     public string Email { get; set; }
 
     /// <summary>

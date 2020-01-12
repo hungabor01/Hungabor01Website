@@ -67,6 +67,38 @@ namespace Hungabor01Website.Controllers
       return View(model);
     }
 
+    [AcceptVerbs("Get", "Post")]
+    [AllowAnonymous]
+    public async Task<IActionResult> IsUsernameInUse(string username)
+    {
+      var user = await userManager.FindByNameAsync(username);
+
+      if (user == null)
+      {
+        return Json(true);
+      }
+      else
+      {
+        return Json($"Username {username} is already in use.");
+      }
+    }
+
+    [AcceptVerbs("Get", "Post")]
+    [AllowAnonymous]
+    public async Task<IActionResult> IsEmailInUse(string email)
+    {
+      var user = await userManager.FindByEmailAsync(email);
+
+      if (user == null)
+      {
+        return Json(true);
+      }
+      else
+      {
+        return Json($"Email {email} is already in use.");
+      }
+    }
+
     /// <summary>
     /// Login get method
     /// </summary>
