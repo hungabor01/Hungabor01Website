@@ -77,6 +77,19 @@ namespace Hungabor01Website
         options.Password.RequireNonAlphanumeric = false;
         options.User.RequireUniqueEmail = true;
       });
+
+      //Add external login providers
+      services.AddAuthentication()
+        .AddGoogle(options =>
+        {
+          options.ClientId = "118292580514-ssg2id1nloch9hpgn35bkdthkc15kbeq.apps.googleusercontent.com";
+          options.ClientSecret = "IEyiv5scjGTGtqkQK76abHCL";
+        })
+        .AddFacebook(options =>
+        {
+          options.AppId = "562598220986420";
+          options.AppSecret = "a76e23e340715dcf11ba7527e4b38bd7";
+        });
     }
 
     /// <summary>
