@@ -4,31 +4,72 @@
   ViewBag.Title = "User Login";
 }
 
-<h1>User Login</h1>
+@section Styles {
+  <environment include="Development">
+    <link href="~/css/login_registration.css" rel="stylesheet" />
+  </environment>
+  <environment exclude="Development">
+    <link href="~/css/login_registration.min.css" rel="stylesheet" />
+  </environment>
+}
 
-<div class="row">
-  <div class="col-md-12">
-    <form method="post">
-      <div asp-validation-summary="All" class="text-danger"></div>
-      <div class="form-group">
-        <label asp-for="UsernameOrEmail"></label>
-        <input asp-for="UsernameOrEmail" class="form-control" />
+<div class="d-flex justify-content-center h-100">
+  <div class="card">
+    <!--start of header-->
+    <div class="card-header">
+      <h3>Sign In</h3>
+      <div class="d-flex justify-content-end social_icon">
+        <span><i class="fab fa-facebook-square"></i></span>
+        <span><i class="fab fa-google-plus-square"></i></span>
+        <span><i class="fab fa-twitter-square"></i></span>
+      </div>
+    </div>
+    <!--end of header-->
+    <!--start of body-->
+    <div class="card-body">
+      <form method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <!--start of username-->
         <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <div class="checkbox">
-          <label asp-for="RememberMe">
-            <input asp-for="RememberMe" />
-            @Html.DisplayNameFor(m => m.RememberMe)
-          </label>
+        <div class="input-group form-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+          </div>
+          <input type="text" class="form-control" placeholder="username or email" asp-for="UsernameOrEmail">
         </div>
+        <!--end of username-->
+        <!--start of password-->
+        <span asp-validation-for="Password" class="text-danger"></span>
+        <div class="input-group form-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-key"></i></span>
+          </div>
+          <input type="password" class="form-control" placeholder="password" asp-for="Password">
+        </div>
+        <!--end of password-->
+        <!--start of remember me-->
+        <div class="row align-items-center remember">
+          <input asp-for="RememberMe" />
+          @Html.DisplayNameFor(m => m.RememberMe)
+        </div>
+        <!--end of remember me-->
+        <!--start of submit button-->
+        <div class="form-group">
+          <input type="submit" value="Login" class="btn float-right login_btn">
+        </div>
+        <!--end of submit button-->
+      </form>
+    </div>
+    <!--end of body-->
+    <!--start of footer-->
+    <div class="card-footer">
+      <div class="d-flex justify-content-center links">
+        Don't have an account?<a asp-action="Register" asp-controller="Account">Sign Up</a>
       </div>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+      <div class="d-flex justify-content-center">
+        <a href="#">Forgot your password?</a>
+      </div>
+    </div>
+    <!--end of footer-->
   </div>
 </div>

@@ -16,5 +16,11 @@
     "inputFiles": [
       "wwwroot/css/Navigation.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/login_registration.min.css",
+    "inputFiles": [
+      "wwwroot/css/login_registration.css"
+    ]
   }
 ]

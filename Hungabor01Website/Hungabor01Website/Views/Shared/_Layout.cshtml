@@ -30,6 +30,8 @@
     <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
   </environment>
+
+  @RenderSection("Styles", required: false)
 </head>
 <body>
   <!-- start of page wrapper -->
@@ -51,7 +53,7 @@
         </div>
         <!-- end of nav header -->
         <div class="fixed-items">
-          @if (SignInManager.IsSignedIn(User))
+         @if (SignInManager.IsSignedIn(User))
           {
             <!-- start of account details -->
             <div class="sidebar-header">
