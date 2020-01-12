@@ -26,5 +26,10 @@ namespace Hungabor01Website.ViewModels
     /// </summary>
     [Display(Name = "Remember me")]
     public bool RememberMe { get; set; }
+
+    /// <summary>
+    /// The original url when an unauthorized page is requested
+    /// </summary>
+    public string ReturnUrl { get; set; }
   }
 }

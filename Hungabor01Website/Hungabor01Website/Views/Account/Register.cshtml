@@ -19,9 +19,12 @@
     <div class="card-header">
       <h3>Register</h3>
       <div class="d-flex justify-content-end social_icon">
-        <span><i class="fab fa-facebook-square"></i></span>
-        <span><i class="fab fa-google-plus-square"></i></span>
-        <span><i class="fab fa-twitter-square"></i></span>
+        <a asp-action="ExternalLogin" asp-route-provider="Facebook" asp-route-source="Register">
+          <span><i class="fab fa-facebook-square"></i></span>
+        </a>
+        <a asp-action="ExternalLogin" asp-route-provider="Google" asp-route-source="Register">
+          <span><i class="fab fa-google-plus-square"></i></span>
+        </a>
       </div>
     </div>
     <!--end of header-->

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Hungabor01Website.Controllers
@@ -102,12 +103,105 @@ namespace Hungabor01Website.Controllers
     /// <summary>
     /// Login get method
     /// </summary>
+    /// <param name="returnUrl">The redirection url after authentication</param>
     /// <returns>Login view</returns>
     [HttpGet]
     [AllowAnonymous]
-    public IActionResult Login()
+    public IActionResult Login(string returnUrl)
     {
-      return View();
+      LoginViewModel model = new LoginViewModel
+      {
+        ReturnUrl = returnUrl
+      };
+
+      return View(model);
+    }
+
+    /// <summary>
+    /// Action, which is executed when clicking on an external provider
+    /// </summary>
+    /// <param name="provider">The name of the external login provider</param>
+    /// <param name="returnUrl">The redirection url after authentication</param>
+    /// <returns>Redirects to the provider's login page</returns>
+    [AllowAnonymous]    
+    public IActionResult ExternalLogin(string provider, string returnUrl, string source)
+    {
+      var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl, Source = source });
+      var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+      return new ChallengeResult(provider, properties);
+    }
+
+    /// <summary>
+    /// The callback action after the external authentication
+    /// </summary>
+    /// <param name="returnUrl">The redirection url after authentication</param>
+    /// <param name="remoteError">Any error coming from the external provider</param>
+    /// <returns></returns>
+    [AllowAnonymous]
+    public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string source = null, string remoteError = null)
+    {
+      returnUrl ??= Url.Content("~/");
+
+      string error = null;
+
+      if (remoteError != null)
+      {
+        error = $"Error from external provider: {remoteError}";
+      }
+
+      var info = await signInManager.GetExternalLoginInfoAsync();
+      if (info == null && remoteError == null)
+      {
+        error = "Error loading external login information.";
+      }
+
+      if (!string.IsNullOrWhiteSpace(error))
+      {
+        ModelState.AddModelError(string.Empty, error);
+        if (source == "Login")
+        {
+          return View(source, new LoginViewModel { ReturnUrl = returnUrl });
+        }
+        else
+        {
+          return View(source, new RegisterViewModel());
+        }
+      }
+
+      var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+      if (signInResult.Succeeded)
+      {
+        return LocalRedirect(returnUrl);
+      }
+      else
+      {
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+
+        if (email != null)
+        {
+          var user = await userManager.FindByEmailAsync(email);
+
+          if (user == null)
+          {
+            user = new IdentityUser
+            {
+              UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
+              Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+            };
+
+            await userManager.CreateAsync(user);
+          }
+
+          await userManager.AddLoginAsync(user, info);
+          await signInManager.SignInAsync(user, isPersistent: false);
+
+          return LocalRedirect(returnUrl);
+        }
+
+        ViewBag.ErrorMessage = $"Email claim not received from: {info.LoginProvider}";
+        return View("Error");
+      }
     }
 
     /// <summary>
