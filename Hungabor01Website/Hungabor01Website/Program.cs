@@ -28,7 +28,7 @@ namespace Hungabor01Website
     public static IHostBuilder CreateHostBuilder(string[] args) =>
       Host.CreateDefaultBuilder(args)
         .ConfigureLogging(logging =>
-        { 
+        {
           logging.AddAzureWebAppDiagnostics();
 
           //These are overridden by the Azure portal, so actually they don't do anything in production

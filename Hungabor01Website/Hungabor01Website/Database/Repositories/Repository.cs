@@ -14,22 +14,31 @@ namespace Hungabor01Website.Database.Repositories
   {
     protected DbContext Context;
 
-    public void InitRepository(DbContext context) => Context = context;
+    public void InitRepository(DbContext context) =>
+      Context = context;
 
-    public TEntity Get(int id) => Context.Set<TEntity>().Find(id);
+    public TEntity Get(int id) =>
+      Context.Set<TEntity>().Find(id);
 
-    public IEnumerable<TEntity> GetAll() => Context.Set<TEntity>().ToList();
+    public IEnumerable<TEntity> GetAll() =>
+      Context.Set<TEntity>().ToList();
 
-    public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate) => Context.Set<TEntity>().Where(predicate);
+    public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate) => 
+      Context.Set<TEntity>().Where(predicate);
 
-    public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate) => Context.Set<TEntity>().SingleOrDefault(predicate);
+    public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate) => 
+      Context.Set<TEntity>().SingleOrDefault(predicate);
 
-    public void Add(TEntity entity) => Context.Set<TEntity>().Add(entity);
+    public void Add(TEntity entity) =>
+      Context.Set<TEntity>().Add(entity);
 
-    public void AddRange(IEnumerable<TEntity> entities) => Context.Set<TEntity>().AddRange(entities);
+    public void AddRange(IEnumerable<TEntity> entities) => 
+      Context.Set<TEntity>().AddRange(entities);
 
-    public void Remove(TEntity entity) => Context.Set<TEntity>().Remove(entity);
+    public void Remove(TEntity entity) => 
+      Context.Set<TEntity>().Remove(entity);
 
-    public void RemoveRange(IEnumerable<TEntity> entities) => Context.Set<TEntity>().RemoveRange(entities);
+    public void RemoveRange(IEnumerable<TEntity> entities) => 
+      Context.Set<TEntity>().RemoveRange(entities);
   }
 }

@@ -43,7 +43,7 @@ namespace Hungabor01Website.Controllers
     /// <returns>The Privacy view</returns>
     [AllowAnonymous]
     public IActionResult Privacy()
-    {      
+    {
       return View();
     }
   }
