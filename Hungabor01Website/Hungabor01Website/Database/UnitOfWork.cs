@@ -13,10 +13,10 @@ namespace Hungabor01Website.Database
 
     public UnitOfWork(
       WebsiteDbContext context,
-      ITestEntityRepository exercises)
+      ITestEntityRepository testEntities)
     {
       this.context = context;
-      TestEntities = exercises;
+      TestEntities = testEntities;
 
       //Must initailize the repositories with the context to work
       TestEntities.InitRepository(context);

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Hungabor01Website.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Hungabor01Website.Controllers
 {
@@ -10,6 +12,13 @@ namespace Hungabor01Website.Controllers
   [Route("Error")]
   public class ErrorController : Controller
   {
+    private readonly ILogger<ErrorController> logger;
+
+    public ErrorController(ILogger<ErrorController> logger)
+    {
+      this.logger = logger;
+    }
+
     /// <summary>
     /// Action to handle errors with status code
     /// </summary>
@@ -20,11 +29,13 @@ namespace Hungabor01Website.Controllers
     public IActionResult ExceptionCodeHandler(int errorCode)
     {
       ViewBag.ErrorCode = errorCode;
-      ViewBag.ErrorMessage = errorCode switch
+      var errorMessage = errorCode switch
       {
-        404 => "The resource you requested could not be found.",
-        _ => "An unexpected error has occured.",
+        404 => Strings.Error404,
+        _ => Strings.UnexpectedError,
       };
+      ViewBag.ErrorMessage = errorMessage;
+      logger.LogWarning(EventIds.ExceptionCodeHandlerError, errorMessage);
       return View("Error");
     }
     
@@ -36,10 +47,11 @@ namespace Hungabor01Website.Controllers
     [Route("UnhandledError")]
     public IActionResult UnhandledError()
     {
-      var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-
-      ViewBag.ErrorMessage = exceptionHandlerPathFeature.Error.Message;
-
+      var exceptionHandlerPathFeature =
+        HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+      var errorMessage = exceptionHandlerPathFeature.Error.Message;
+      ViewBag.ErrorMessage = errorMessage;
+      logger.LogWarning(EventIds.UnhandledErrorError, errorMessage);
       return View("Error");
     }
   }

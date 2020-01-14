@@ -1,6 +1,7 @@
 using Hungabor01Website.Database;
 using Hungabor01Website.Database.Entities;
 using Hungabor01Website.Database.Repositories;
+using Hungabor01Website.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hungabor01Website
@@ -56,18 +58,23 @@ namespace Hungabor01Website
       services.AddScoped<ITestEntityRepository, TestEntityRepository>();
 
       //DbContext
-      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         services.AddDbContext<WebsiteDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")));
+          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")));
       else
         services.AddDbContext<WebsiteDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")));
+          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")));
 
       //Entities
       services.AddScoped<TestEntity>();
 
       //Adds the user and role object to the db context
-      services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<WebsiteDbContext>();
+      services.AddIdentity<IdentityUser, IdentityRole>(options =>
+      {
+        options.SignIn.RequireConfirmedEmail = true;
+      })
+      .AddEntityFrameworkStores<WebsiteDbContext>()
+      .AddDefaultTokenProviders();
 
       //Password complexity
       services.Configure<IdentityOptions>(options =>
@@ -80,16 +87,25 @@ namespace Hungabor01Website
 
       //Add external login providers
       services.AddAuthentication()
-        .AddGoogle(options =>
-        {
-          options.ClientId = "118292580514-ssg2id1nloch9hpgn35bkdthkc15kbeq.apps.googleusercontent.com";
-          options.ClientSecret = "IEyiv5scjGTGtqkQK76abHCL";
-        })
-        .AddFacebook(options =>
-        {
-          options.AppId = "562598220986420";
-          options.AppSecret = "a76e23e340715dcf11ba7527e4b38bd7";
-        });
+      .AddGoogle(options =>
+      {
+        options.ClientId = configuration.GetValue<string>("ExternalLoginProviders:Google:ClientId");
+        options.ClientSecret = configuration.GetValue<string>("ExternalLoginProviders:Google:ClientSecret");
+      })
+      .AddFacebook(options =>
+      {
+        options.AppId = configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppId");
+        options.AppSecret = configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppSecret");
+      });
+
+      //MessageSenders
+      services.AddScoped<IMessageSender, EmailSender>(s => new EmailSender(
+        configuration.GetValue<string>("EmailSender:host"),
+        configuration.GetValue<int>("EmailSender:port"),
+        configuration.GetValue<string>("EmailSender:username"),
+        configuration.GetValue<string>("EmailSender:password"),
+        s.GetService<ILogger<EmailSender>>()
+      ));
     }
 
     /// <summary>

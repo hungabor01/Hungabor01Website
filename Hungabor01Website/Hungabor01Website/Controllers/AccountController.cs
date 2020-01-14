@@ -1,9 +1,16 @@
-﻿using Hungabor01Website.ViewModels;
+﻿using Hungabor01Website.Utilities;
+using Hungabor01Website.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using Hungabor01Website.Constants;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace Hungabor01Website.Controllers
 {
@@ -14,13 +21,19 @@ namespace Hungabor01Website.Controllers
   {
     private readonly UserManager<IdentityUser> userManager;
     private readonly SignInManager<IdentityUser> signInManager;
+    private readonly IServiceProvider serviceProvider;
+    private readonly ILogger logger;
 
     public AccountController(
       UserManager<IdentityUser> userManager,
-      SignInManager<IdentityUser> signInManager)
+      SignInManager<IdentityUser> signInManager,
+      IServiceProvider serviceProvider,
+      ILogger<AccountController> logger)
     {
       this.userManager = userManager;
       this.signInManager = signInManager;
+      this.serviceProvider = serviceProvider;
+      this.logger = logger;
     }
 
     /// <summary>
@@ -43,31 +56,109 @@ namespace Hungabor01Website.Controllers
     [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-      if (ModelState.IsValid)
+      if (!ModelState.IsValid)
       {
-        var user = new IdentityUser
-        {
-          UserName = model.Username,
-          Email = model.Email
-        };
+        return View(model);
+      }
 
-        var result = await userManager.CreateAsync(user, model.Password);
+      var user = new IdentityUser
+      {
+        UserName = model.Username,
+        Email = model.Email
+      };
 
-        if (result.Succeeded)
-        {
-          await signInManager.SignInAsync(user, isPersistent: false);
-          return RedirectToAction("index", "home");
-        }
+      var result = await userManager.CreateAsync(user, model.Password);
 
+      if (result.Succeeded)
+      {
+        if (await SendConfirmationEmailAsync(user))
+          ModelState.AddModelError(string.Empty, Strings.NotifyUserConfirmationEmailSent);
+        else
+          ModelState.AddModelError(string.Empty, Strings.NotifyUserConfirmationEmailSentError);
+
+        var loginModel = new LoginViewModel { UsernameOrEmail = model.Email };
+
+        return View("Login", loginModel);
+      }
+      else
+      {
         foreach (var error in result.Errors)
         {
           ModelState.AddModelError(string.Empty, error.Description);
+          logger.LogWarning(EventIds.RegisterCreateUserError,
+            string.Format(Strings.AccountError, error.Description, model.Username));
         }
-      }
 
-      return View(model);
+        return View(model);
+      }
     }
 
+    private async Task<bool> SendConfirmationEmailAsync(IdentityUser user)
+    {
+      var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+      var confirmationLink =
+        Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+      var emailSender = serviceProvider.GetService<IMessageSender>();
+
+      var emailBody = new StringBuilder();
+      emailBody.AppendLine(Strings.ConfirmationEmailBodyHey);
+      emailBody.AppendLine(Strings.ConfirmationEmailBodyThanks);
+      emailBody.AppendLine(confirmationLink);
+      emailBody.AppendLine(Strings.ConfirmationEmailAssistance);
+
+      return await emailSender.SendMessageAsync(
+        user.Email,
+        string.Format(Strings.ConfirmationEmailSubject, Assembly.GetEntryAssembly().GetName().Name),
+        emailBody.ToString()
+      );
+    }
+
+    /// <summary>
+    /// Confirm the email address via the token
+    /// </summary>
+    /// <param name="userId">The user id of the user</param>
+    /// <param name="token">The previously generated token</param>
+    /// <returns>Redirects to home page</returns>
+    [AllowAnonymous]
+    public async Task<IActionResult> ConfirmEmail(string userId, string token)
+    {
+      if (userId == null || token == null)
+      {
+        return RedirectToAction("index", "home");
+      }
+
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        ViewBag.ErrorMessage = Strings.EmailConfirmationError;
+        logger.LogWarning(EventIds.ConfirmEmailUserIdNullError,
+          string.Format(Strings.AccountError, Strings.EmailConfirmationError, userId));
+        return View("Error");
+      }
+
+      var result = await userManager.ConfirmEmailAsync(user, token);
+
+      if (result.Succeeded)
+      {
+        await signInManager.SignInAsync(user, isPersistent: false);
+        return RedirectToAction("index", "home");
+      }
+      else
+      {
+        ViewBag.ErrorMessage = Strings.EmailConfirmationError;
+        logger.LogWarning(EventIds.ConfirmEmailCannotConfirmError,
+          string.Format(Strings.AccountError, Strings.EmailConfirmationError, userId));
+        return View("Error");
+      }
+    }
+
+    /// <summary>
+    /// Checks the username on the client side
+    /// </summary>
+    /// <param name="username">The username to check</param>
+    /// <returns>Is the username taken or not</returns>
     [AcceptVerbs("Get", "Post")]
     [AllowAnonymous]
     public async Task<IActionResult> IsUsernameInUse(string username)
@@ -80,10 +171,15 @@ namespace Hungabor01Website.Controllers
       }
       else
       {
-        return Json($"Username {username} is already in use.");
+        return Json(string.Format(Strings.UsernameIsTaken, username));
       }
     }
 
+    /// <summary>
+    /// Checks the email on the client side
+    /// </summary>
+    /// <param name="email">The email to check</param>
+    /// <returns>Is the email taken or not</returns>
     [AcceptVerbs("Get", "Post")]
     [AllowAnonymous]
     public async Task<IActionResult> IsEmailInUse(string email)
@@ -96,7 +192,7 @@ namespace Hungabor01Website.Controllers
       }
       else
       {
-        return Json($"Email {email} is already in use.");
+        return Json(string.Format(Strings.EmailIsTaken, email));
       }
     }
 
@@ -126,8 +222,12 @@ namespace Hungabor01Website.Controllers
     [AllowAnonymous]    
     public IActionResult ExternalLogin(string provider, string returnUrl, string source)
     {
-      var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl, Source = source });
-      var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+      var redirectUrl = Url.Action(
+        "ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl, Source = source });
+
+      var properties =
+        signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
       return new ChallengeResult(provider, properties);
     }
 
@@ -138,37 +238,34 @@ namespace Hungabor01Website.Controllers
     /// <param name="remoteError">Any error coming from the external provider</param>
     /// <returns></returns>
     [AllowAnonymous]
-    public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string source = null, string remoteError = null)
+    public async Task<IActionResult> ExternalLoginCallback(
+      string returnUrl = null, string source = null, string remoteError = null)
     {
       returnUrl ??= Url.Content("~/");
 
       string error = null;
+      ExternalLoginInfo info = null;
 
       if (remoteError != null)
       {
-        error = $"Error from external provider: {remoteError}";
+        error = string.Format(Strings.ExternalProviderError, remoteError);
       }
-
-      var info = await signInManager.GetExternalLoginInfoAsync();
-      if (info == null && remoteError == null)
+      else
       {
-        error = "Error loading external login information.";
+        info = await signInManager.GetExternalLoginInfoAsync();
+        if (info == null)
+        {
+          error = Strings.ExternalLoginError;
+        }
       }
 
       if (!string.IsNullOrWhiteSpace(error))
       {
-        ModelState.AddModelError(string.Empty, error);
-        if (source == "Login")
-        {
-          return View(source, new LoginViewModel { ReturnUrl = returnUrl });
-        }
-        else
-        {
-          return View(source, new RegisterViewModel());
-        }
+        return NavigateBackWithError(returnUrl, source, error);
       }
 
-      var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+      var signInResult = await signInManager.ExternalLoginSignInAsync(
+        info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
       if (signInResult.Succeeded)
       {
@@ -178,29 +275,52 @@ namespace Hungabor01Website.Controllers
       {
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
-        if (email != null)
+        if (email == null)
         {
-          var user = await userManager.FindByEmailAsync(email);
-
-          if (user == null)
-          {
-            user = new IdentityUser
-            {
-              UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
-              Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-            };
-
-            await userManager.CreateAsync(user);
-          }
-
-          await userManager.AddLoginAsync(user, info);
-          await signInManager.SignInAsync(user, isPersistent: false);
-
-          return LocalRedirect(returnUrl);
+          ViewBag.ErrorMessage = string.Format(Strings.EmailClaimError, info.LoginProvider);
+          return View("Error");
         }
+        else
+        {
+          return await RegisterAndLogin(returnUrl, info, email);
+        }
+      }
+    }
 
-        ViewBag.ErrorMessage = $"Email claim not received from: {info.LoginProvider}";
-        return View("Error");
+    private async Task<IActionResult> RegisterAndLogin(string returnUrl, ExternalLoginInfo info, string email)
+    {
+      var user = await userManager.FindByEmailAsync(email);
+
+      if (user == null)
+      {
+        user = new IdentityUser
+        {
+          UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
+          Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+        };
+
+        await userManager.CreateAsync(user);
+
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        await userManager.ConfirmEmailAsync(user, token);
+      }
+
+      await userManager.AddLoginAsync(user, info);
+      await signInManager.SignInAsync(user, isPersistent: false);
+      return LocalRedirect(returnUrl);
+    }
+
+    private IActionResult NavigateBackWithError(string returnUrl, string source, string error)
+    {
+      ModelState.AddModelError(string.Empty, error);
+      logger.LogWarning(EventIds.ExternalLoginCallbackError, error);
+      if (source == "Login")
+      {
+        return View(source, new LoginViewModel { ReturnUrl = returnUrl });
+      }
+      else
+      {
+        return View(source, new RegisterViewModel());
       }
     }
 
@@ -213,33 +333,47 @@ namespace Hungabor01Website.Controllers
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
     {
-      if (ModelState.IsValid)
+      if (!ModelState.IsValid)
       {
-        var username = model.UsernameOrEmail;
-        var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
-        if (user != null)
-        {
-          username = user.UserName;
-        }
-
-        var result = await signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, false);
-
-        if (result.Succeeded)
-        {
-          if (Url.IsLocalUrl(returnUrl))
-          {
-            return Redirect(returnUrl);
-          }
-          else
-          {
-            return RedirectToAction("index", "home");
-          }
-        }
-
-        ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+        return View(model);
       }
 
-      return View(model);
+      var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
+      if (user == null)
+      {
+        user = await userManager.FindByNameAsync(model.UsernameOrEmail);
+      }
+
+      if (user == null)
+      {
+        ModelState.AddModelError(string.Empty, Strings.InvalidUsername);
+
+        logger.LogWarning(EventIds.LoginInvalidUsername,
+          string.Format(Strings.AccountError, Strings.InvalidUsername, model.UsernameOrEmail));
+
+        return View(model);
+      }
+
+      if (!user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
+      {
+        ModelState.AddModelError(string.Empty, Strings.EmailNotConfirmed);
+        return View(model);
+      }
+
+      var result = await signInManager.PasswordSignInAsync(
+        user.UserName, model.Password, model.RememberMe, false);
+
+      if (result.Succeeded)
+      {
+        return LocalRedirect(returnUrl);
+      }
+      else
+      {
+        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
+        logger.LogWarning(EventIds.LoginError,
+          string.Format(Strings.AccountError, Strings.InvalidLogin, model.UsernameOrEmail));
+        return View(model);
+      }
     }
 
     /// <summary>
