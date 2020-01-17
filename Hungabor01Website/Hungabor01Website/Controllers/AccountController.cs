@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Hungabor01Website.Constants;
 using Microsoft.Extensions.Logging;
-using System.Text;
 
 namespace Hungabor01Website.Controllers
 {
@@ -210,6 +209,56 @@ namespace Hungabor01Website.Controllers
     }
 
     /// <summary>
+    /// Login post method
+    /// </summary>
+    /// <param name="model">ViewModel of the login</param>
+    /// <returns>Asynchronous login brings to the previously requested url</returns>
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(model);
+      }
+
+      var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
+      if (user == null)
+      {
+        user = await userManager.FindByNameAsync(model.UsernameOrEmail);
+      }
+
+      if (user == null)
+      {
+        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
+        return View(model);
+      }
+
+      if (!user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
+      {
+        ModelState.AddModelError(string.Empty, Strings.EmailNotConfirmed);
+        return View(model);
+      }
+
+      var result = await signInManager.PasswordSignInAsync(
+        user.UserName, model.Password, model.RememberMe, false);
+
+      if (result.Succeeded)
+      {
+        if (string.IsNullOrWhiteSpace(returnUrl))
+        {
+          returnUrl = Url.Content("~/");
+        }
+        return LocalRedirect(returnUrl);
+      }
+      else
+      {
+        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
+        return View(model);
+      }
+    }
+
+    /// <summary>
     /// Action, which is executed when clicking on an external provider
     /// </summary>
     /// <param name="provider">The name of the external login provider</param>
@@ -323,55 +372,9 @@ namespace Hungabor01Website.Controllers
     }
 
     /// <summary>
-    /// Login post method
+    /// Get action of Forgot Password
     /// </summary>
-    /// <param name="model">ViewModel of the login</param>
-    /// <returns>Asynchronous login brings to the previously requested url</returns>
-    [HttpPost]
-    [AllowAnonymous]
-    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
-    {
-      if (!ModelState.IsValid)
-      {
-        return View(model);
-      }
-
-      var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
-      if (user == null)
-      {
-        user = await userManager.FindByNameAsync(model.UsernameOrEmail);
-      }
-
-      if (user == null)
-      {
-        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
-        return View(model);
-      }
-      
-      if (!user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
-      {
-        ModelState.AddModelError(string.Empty, Strings.EmailNotConfirmed);
-        return View(model);
-      }
-
-      var result = await signInManager.PasswordSignInAsync(
-        user.UserName, model.Password, model.RememberMe, false);
-
-      if (result.Succeeded)
-      {
-        if (string.IsNullOrWhiteSpace(returnUrl))
-        {
-          returnUrl = Url.Content("~/");
-        }
-        return LocalRedirect(returnUrl);
-      }
-      else
-      {
-        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
-        return View(model);
-      }
-    }
-
+    /// <returns>ForgotPassword view</returns>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult ForgotPassword()
@@ -379,32 +382,102 @@ namespace Hungabor01Website.Controllers
       return View();
     }
 
+    /// <summary>
+    /// Post method of Forgot Password
+    /// </summary>
+    /// <param name="model">ViewModel of ForgotPassword</param>
+    /// <returns>View of Forgot Password</returns>
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
-      if (ModelState.IsValid)
-      {
-        var user = await userManager.FindByEmailAsync(model.Email);
-
-        if (user != null && await userManager.IsEmailConfirmedAsync(user))
-        {
-          var token = await userManager.GeneratePasswordResetTokenAsync(user);
-
-          var passwordResetLink = Url.Action("ResetPassword", "Account",
-                  new { email = model.Email, token = token }, Request.Scheme);
-
-          
-
-          return View("ForgotPasswordConfirmation");
-        }
-
-        return View("ForgotPasswordConfirmation");
-      }
-      else
+      if (!ModelState.IsValid)
       {
         return View(model);
       }
+
+      var user = await userManager.FindByEmailAsync(model.Email);
+
+      if (user != null && await userManager.IsEmailConfirmedAsync(user))
+      {
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+        var passwordResetLink = Url.Action("ResetPassword", "Account",
+                new { email = model.Email, token = token }, Request.Scheme);
+
+        var emailSender = serviceProvider.GetService<IMessageSender>();
+
+        var emailBody = string.Format(Strings.PasswordResetEmailBody, passwordResetLink);
+
+        await emailSender.SendMessageAsync(
+          user.Email,
+          string.Format(Strings.PasswordResetEmailSubject, Assembly.GetEntryAssembly().GetName().Name),
+          emailBody);
+      }
+
+      ModelState.AddModelError(
+        string.Empty, string.Format(Strings.ForgotPasswordSent, model.Email));
+      return View(model);
+    }
+
+    /// <summary>
+    /// Get method of Reset Password
+    /// </summary>
+    /// <param name="token">The token for the password reset</param>
+    /// <param name="email">The email of the user, who resets the password</param>
+    /// <returns>View of Forgot Password</returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ResetPassword(string token, string email)
+    {
+      if (token == null || email == null)
+      {
+        RedirectToAction("index", "home");
+      }
+
+      var model = new ResetPasswordViewModel
+      {
+        Email = email,
+        Token = token        
+      };
+
+      return View(model);
+    }
+
+    /// <summary>
+    /// Post method of Forgot Password
+    /// </summary>
+    /// <param name="model">ViewModel of Forgot Password</param>
+    /// <returns>The view of Forgot Password</returns>
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(model);
+      }
+
+      var user = await userManager.FindByEmailAsync(model.Email);
+
+      if (user != null)
+      {
+        var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+        if (!result.Succeeded)
+        {
+          foreach (var error in result.Errors)
+          {
+            ModelState.AddModelError(string.Empty, error.Description);
+          }
+          logger.LogWarning(
+            EventIds.ResetPasswordError, string.Format(Strings.ResetPasswordError, model.Email, model.Token));
+          return View(model);
+        }
+      }
+
+      ModelState.AddModelError(
+        string.Empty, string.Format(Strings.ResetPasswordNotification, model.Email));
+      return View(model);
     }
 
     /// <summary>

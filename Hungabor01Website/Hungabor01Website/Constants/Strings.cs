@@ -5,14 +5,23 @@
   /// </summary>
   public static class Strings
   {
-    //Confirmation email
+    //Email sending
     public const string NotifyUserConfirmationEmailSent = "Confirmation email is sent. Please click on the link in the email.";
     public const string NotifyUserConfirmationEmailSentError = "Could not send the confirmation email. Please try again signing up.";
 
+    //Confirmation email
     public const string ConfirmationEmailSubject = "Email confirmation request from {0}.";       
     public const string ConfirmationEmailBody =
       "Hey,\n" + 
       "Thank you for your registration. Please click to the link below to finish your registration.\n" +
+      "{0}\n" +
+      "For further assistance, please contact me on hungabor01@gmail.com";
+
+    //Password reset email
+    public const string PasswordResetEmailSubject = "Password reset link from {0}.";
+    public const string PasswordResetEmailBody =
+      "Hey,\n" +
+      "Please click to the link below and enter your new password.\n" +
       "{0}\n" +
       "For further assistance, please contact me on hungabor01@gmail.com";
 
@@ -34,5 +43,9 @@
 
     public const string EmailIsTaken = "Email {0} is already in use.";
     public const string UsernameIsTaken = "Username {0} is already in use.";
+
+    public const string ForgotPasswordSent = "Password reset email has been sent to {0}.";
+    public const string ResetPasswordNotification = "Password has been changed for {0}.\nYou can sign in with your new password.";
+    public const string ResetPasswordError = "Could not change password for {0} with toke {1}.";
   }
 }
