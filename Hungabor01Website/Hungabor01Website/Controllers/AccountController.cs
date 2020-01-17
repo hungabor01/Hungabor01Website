@@ -101,16 +101,12 @@ namespace Hungabor01Website.Controllers
 
       var emailSender = serviceProvider.GetService<IMessageSender>();
 
-      var emailBody = new StringBuilder();
-      emailBody.AppendLine(Strings.ConfirmationEmailBodyHey);
-      emailBody.AppendLine(Strings.ConfirmationEmailBodyThanks);
-      emailBody.AppendLine(confirmationLink);
-      emailBody.AppendLine(Strings.ConfirmationEmailAssistance);
+      var emailBody = string.Format(Strings.ConfirmationEmailBody, confirmationLink);
 
       return await emailSender.SendMessageAsync(
         user.Email,
         string.Format(Strings.ConfirmationEmailSubject, Assembly.GetEntryAssembly().GetName().Name),
-        emailBody.ToString()
+        emailBody
       );
     }
 
@@ -278,12 +274,28 @@ namespace Hungabor01Website.Controllers
         if (email == null)
         {
           ViewBag.ErrorMessage = string.Format(Strings.EmailClaimError, info.LoginProvider);
+          logger.LogWarning(EventIds.ExternalLoginCallbackEmailError,
+            string.Format(Strings.ExternalLoginCallbackEmailError, info.LoginProvider));
           return View("Error");
         }
         else
         {
           return await RegisterAndLogin(returnUrl, info, email);
         }
+      }
+    }
+
+    private IActionResult NavigateBackWithError(string returnUrl, string source, string error)
+    {
+      ModelState.AddModelError(string.Empty, error);
+      logger.LogWarning(EventIds.ExternalLoginCallbackError, error);
+      if (source == "Login")
+      {
+        return View(source, new LoginViewModel { ReturnUrl = returnUrl });
+      }
+      else
+      {
+        return View(source, new RegisterViewModel());
       }
     }
 
@@ -310,20 +322,6 @@ namespace Hungabor01Website.Controllers
       return LocalRedirect(returnUrl);
     }
 
-    private IActionResult NavigateBackWithError(string returnUrl, string source, string error)
-    {
-      ModelState.AddModelError(string.Empty, error);
-      logger.LogWarning(EventIds.ExternalLoginCallbackError, error);
-      if (source == "Login")
-      {
-        return View(source, new LoginViewModel { ReturnUrl = returnUrl });
-      }
-      else
-      {
-        return View(source, new RegisterViewModel());
-      }
-    }
-
     /// <summary>
     /// Login post method
     /// </summary>
@@ -346,14 +344,10 @@ namespace Hungabor01Website.Controllers
 
       if (user == null)
       {
-        ModelState.AddModelError(string.Empty, Strings.InvalidUsername);
-
-        logger.LogWarning(EventIds.LoginInvalidUsername,
-          string.Format(Strings.AccountError, Strings.InvalidUsername, model.UsernameOrEmail));
-
+        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
         return View(model);
       }
-
+      
       if (!user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
       {
         ModelState.AddModelError(string.Empty, Strings.EmailNotConfirmed);
@@ -365,13 +359,50 @@ namespace Hungabor01Website.Controllers
 
       if (result.Succeeded)
       {
+        if (string.IsNullOrWhiteSpace(returnUrl))
+        {
+          returnUrl = Url.Content("~/");
+        }
         return LocalRedirect(returnUrl);
       }
       else
       {
         ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
-        logger.LogWarning(EventIds.LoginError,
-          string.Format(Strings.AccountError, Strings.InvalidLogin, model.UsernameOrEmail));
+        return View(model);
+      }
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ForgotPassword()
+    {
+      return View();
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    {
+      if (ModelState.IsValid)
+      {
+        var user = await userManager.FindByEmailAsync(model.Email);
+
+        if (user != null && await userManager.IsEmailConfirmedAsync(user))
+        {
+          var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+          var passwordResetLink = Url.Action("ResetPassword", "Account",
+                  new { email = model.Email, token = token }, Request.Scheme);
+
+          
+
+          return View("ForgotPasswordConfirmation");
+        }
+
+        return View("ForgotPasswordConfirmation");
+      }
+      else
+      {
         return View(model);
       }
     }

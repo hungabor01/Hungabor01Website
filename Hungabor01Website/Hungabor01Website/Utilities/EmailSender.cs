@@ -38,6 +38,26 @@ namespace Hungabor01Website.Utilities
       return await SendMimeMessageAsync(mimeMessage);
     }
 
+    private MimeMessage CreateMimeMessage(string email, string subject, string message)
+    {
+      var mimeMessage = new MimeMessage();
+
+      mimeMessage.From.Add(
+        new MailboxAddress(Assembly.GetEntryAssembly().GetName().Name, username));
+
+      mimeMessage.To.Add(
+        new MailboxAddress(email, email));
+
+      mimeMessage.Subject = subject;
+
+      mimeMessage.Body = new TextPart("plain")
+      {
+        Text = message
+      };
+
+      return mimeMessage;
+    }
+
     private async Task<bool> SendMimeMessageAsync(MimeMessage mimeMessage)
     {
       using (var client = new SmtpClient())
@@ -57,26 +77,6 @@ namespace Hungabor01Website.Utilities
           return false;
         }
       }
-    }
-
-    private MimeMessage CreateMimeMessage(string email, string subject, string message)
-    {
-      var mimeMessage = new MimeMessage();
-
-      mimeMessage.From.Add(
-        new MailboxAddress(Assembly.GetEntryAssembly().GetName().Name, username));
-
-      mimeMessage.To.Add(
-        new MailboxAddress(email, email));
-
-      mimeMessage.Subject = subject;
-
-      mimeMessage.Body = new TextPart("plain")
-      {
-        Text = message
-      };
-
-      return mimeMessage;
     }
   }
 }
