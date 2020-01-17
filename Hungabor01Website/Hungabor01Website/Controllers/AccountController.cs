@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Hungabor01Website.Constants;
 using Microsoft.Extensions.Logging;
-using System.Text;
 
 namespace Hungabor01Website.Controllers
 {
@@ -101,16 +100,12 @@ namespace Hungabor01Website.Controllers
 
       var emailSender = serviceProvider.GetService<IMessageSender>();
 
-      var emailBody = new StringBuilder();
-      emailBody.AppendLine(Strings.ConfirmationEmailBodyHey);
-      emailBody.AppendLine(Strings.ConfirmationEmailBodyThanks);
-      emailBody.AppendLine(confirmationLink);
-      emailBody.AppendLine(Strings.ConfirmationEmailAssistance);
+      var emailBody = string.Format(Strings.ConfirmationEmailBody, confirmationLink);
 
       return await emailSender.SendMessageAsync(
         user.Email,
         string.Format(Strings.ConfirmationEmailSubject, Assembly.GetEntryAssembly().GetName().Name),
-        emailBody.ToString()
+        emailBody
       );
     }
 
@@ -214,6 +209,56 @@ namespace Hungabor01Website.Controllers
     }
 
     /// <summary>
+    /// Login post method
+    /// </summary>
+    /// <param name="model">ViewModel of the login</param>
+    /// <returns>Asynchronous login brings to the previously requested url</returns>
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(model);
+      }
+
+      var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
+      if (user == null)
+      {
+        user = await userManager.FindByNameAsync(model.UsernameOrEmail);
+      }
+
+      if (user == null)
+      {
+        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
+        return View(model);
+      }
+
+      if (!user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
+      {
+        ModelState.AddModelError(string.Empty, Strings.EmailNotConfirmed);
+        return View(model);
+      }
+
+      var result = await signInManager.PasswordSignInAsync(
+        user.UserName, model.Password, model.RememberMe, false);
+
+      if (result.Succeeded)
+      {
+        if (string.IsNullOrWhiteSpace(returnUrl))
+        {
+          returnUrl = Url.Content("~/");
+        }
+        return LocalRedirect(returnUrl);
+      }
+      else
+      {
+        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
+        return View(model);
+      }
+    }
+
+    /// <summary>
     /// Action, which is executed when clicking on an external provider
     /// </summary>
     /// <param name="provider">The name of the external login provider</param>
@@ -278,12 +323,28 @@ namespace Hungabor01Website.Controllers
         if (email == null)
         {
           ViewBag.ErrorMessage = string.Format(Strings.EmailClaimError, info.LoginProvider);
+          logger.LogWarning(EventIds.ExternalLoginCallbackEmailError,
+            string.Format(Strings.ExternalLoginCallbackEmailError, info.LoginProvider));
           return View("Error");
         }
         else
         {
           return await RegisterAndLogin(returnUrl, info, email);
         }
+      }
+    }
+
+    private IActionResult NavigateBackWithError(string returnUrl, string source, string error)
+    {
+      ModelState.AddModelError(string.Empty, error);
+      logger.LogWarning(EventIds.ExternalLoginCallbackError, error);
+      if (source == "Login")
+      {
+        return View(source, new LoginViewModel { ReturnUrl = returnUrl });
+      }
+      else
+      {
+        return View(source, new RegisterViewModel());
       }
     }
 
@@ -310,70 +371,113 @@ namespace Hungabor01Website.Controllers
       return LocalRedirect(returnUrl);
     }
 
-    private IActionResult NavigateBackWithError(string returnUrl, string source, string error)
+    /// <summary>
+    /// Get action of Forgot Password
+    /// </summary>
+    /// <returns>ForgotPassword view</returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ForgotPassword()
     {
-      ModelState.AddModelError(string.Empty, error);
-      logger.LogWarning(EventIds.ExternalLoginCallbackError, error);
-      if (source == "Login")
-      {
-        return View(source, new LoginViewModel { ReturnUrl = returnUrl });
-      }
-      else
-      {
-        return View(source, new RegisterViewModel());
-      }
+      return View();
     }
 
     /// <summary>
-    /// Login post method
+    /// Post method of Forgot Password
     /// </summary>
-    /// <param name="model">ViewModel of the login</param>
-    /// <returns>Asynchronous login brings to the previously requested url</returns>
+    /// <param name="model">ViewModel of ForgotPassword</param>
+    /// <returns>View of Forgot Password</returns>
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
       if (!ModelState.IsValid)
       {
         return View(model);
       }
 
-      var user = await userManager.FindByEmailAsync(model.UsernameOrEmail);
-      if (user == null)
+      var user = await userManager.FindByEmailAsync(model.Email);
+
+      if (user != null && await userManager.IsEmailConfirmedAsync(user))
       {
-        user = await userManager.FindByNameAsync(model.UsernameOrEmail);
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+        var passwordResetLink = Url.Action("ResetPassword", "Account",
+                new { email = model.Email, token = token }, Request.Scheme);
+
+        var emailSender = serviceProvider.GetService<IMessageSender>();
+
+        var emailBody = string.Format(Strings.PasswordResetEmailBody, passwordResetLink);
+
+        await emailSender.SendMessageAsync(
+          user.Email,
+          string.Format(Strings.PasswordResetEmailSubject, Assembly.GetEntryAssembly().GetName().Name),
+          emailBody);
       }
 
-      if (user == null)
+      ModelState.AddModelError(
+        string.Empty, string.Format(Strings.ForgotPasswordSent, model.Email));
+      return View(model);
+    }
+
+    /// <summary>
+    /// Get method of Reset Password
+    /// </summary>
+    /// <param name="token">The token for the password reset</param>
+    /// <param name="email">The email of the user, who resets the password</param>
+    /// <returns>View of Forgot Password</returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ResetPassword(string token, string email)
+    {
+      if (token == null || email == null)
       {
-        ModelState.AddModelError(string.Empty, Strings.InvalidUsername);
+        RedirectToAction("index", "home");
+      }
 
-        logger.LogWarning(EventIds.LoginInvalidUsername,
-          string.Format(Strings.AccountError, Strings.InvalidUsername, model.UsernameOrEmail));
+      var model = new ResetPasswordViewModel
+      {
+        Email = email,
+        Token = token        
+      };
 
+      return View(model);
+    }
+
+    /// <summary>
+    /// Post method of Forgot Password
+    /// </summary>
+    /// <param name="model">ViewModel of Forgot Password</param>
+    /// <returns>The view of Forgot Password</returns>
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+      if (!ModelState.IsValid)
+      {
         return View(model);
       }
 
-      if (!user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
+      var user = await userManager.FindByEmailAsync(model.Email);
+
+      if (user != null)
       {
-        ModelState.AddModelError(string.Empty, Strings.EmailNotConfirmed);
-        return View(model);
+        var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+        if (!result.Succeeded)
+        {
+          foreach (var error in result.Errors)
+          {
+            ModelState.AddModelError(string.Empty, error.Description);
+          }
+          logger.LogWarning(
+            EventIds.ResetPasswordError, string.Format(Strings.ResetPasswordError, model.Email, model.Token));
+          return View(model);
+        }
       }
 
-      var result = await signInManager.PasswordSignInAsync(
-        user.UserName, model.Password, model.RememberMe, false);
-
-      if (result.Succeeded)
-      {
-        return LocalRedirect(returnUrl);
-      }
-      else
-      {
-        ModelState.AddModelError(string.Empty, Strings.InvalidLogin);
-        logger.LogWarning(EventIds.LoginError,
-          string.Format(Strings.AccountError, Strings.InvalidLogin, model.UsernameOrEmail));
-        return View(model);
-      }
+      ModelState.AddModelError(
+        string.Empty, string.Format(Strings.ResetPasswordNotification, model.Email));
+      return View(model);
     }
 
     /// <summary>

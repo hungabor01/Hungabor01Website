@@ -64,16 +64,11 @@
                 <span class="user-name">
                   <strong>@User.Identity.Name</strong>
                 </span>
-                <span class="user-role">Administrator</span>
-                <span class="user-status">
-                  <i class="fa fa-circle"></i>
-                  <span>Online</span>
-                </span>
               </div>
             </div>
             <!-- end of account details -->
             <!-- start of account icons -->
-            <div class="sidebar-accounticons">
+            <div class="sidebar-accounticons">              
               <a href="#">
                 <i class="fa fa-bell"></i>
                 <span class="badge badge-pill badge-warning notification">3</span>
@@ -94,16 +89,22 @@
           }
           else
           {
-            <div>
-              <a class="nav-link" asp-controller="account" asp-action="login">
-                <i class="fas fa-sign-in-alt"></i>
-                Login
-              </a>
-              <a class="nav-link" asp-controller="account" asp-action="register">
-                <i class="fas fa-user-plus"></i>
-                Register
-              </a>
-            </div>
+            <div class="sidebar-login">
+              <ul>
+                <li>
+                  <a class="nav-link" asp-controller="account" asp-action="login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Sign In</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="nav-link" asp-controller="account" asp-action="register">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Sign up</span>
+                  </a >
+                </li >
+              </ul >
+            </div >
           }
           <!-- start of search -->
           <div class="sidebar-search">
