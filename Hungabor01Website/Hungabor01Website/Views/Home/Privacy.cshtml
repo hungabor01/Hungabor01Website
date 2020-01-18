@@ -1,6 +1,42 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+  ViewData["Title"] = "Privacy Policy and About";
 }
+
+@section Styles {
+  <environment include="Development">
+    <link href="~/css/Privacy.css" rel="stylesheet" />
+  </environment>
+  <environment exclude="Development">
+    <link href="~/css/Privacy.min.css" rel="stylesheet" />
+  </environment>
+}
+
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="row">
+  <div class="col-sm-8">
+    <h3>Hi and welcome on my website!</h3>
+    <p>I am Gábor Gróf, a hungarian .Net developer. I own this site and developing it continously.</p>
+    <p>
+      I have created this website as my personal website. However, it has functionalities, which usually do not necessary for a website used by only one person.
+      The reason of this, that my main goal is practising web development and my skills in .Net. This means, the website is developed in ASP.Net Core.
+      To be more specific, it uses the 3.1 version. The website is hosted in Azure and uses SQL database also in Azure. I also implemented some features,
+      which are useful and used by me. These are hidden behind registration, but everybody can create an account and reach them. I also uploaded my notes about .Net and my training sources.
+    </p>
+    <p>
+      Since one of the goal of this site for me is to develop as a software engineer, I encourage you to report any bugs, errors, language mistakes or problems, even
+      user interface inconveniences. I appreciate every suggestion about the look and layout of the website as well.
+    </p>
+    <p>
+      You can report these issues at hungabor01@gmail.com.
+    </p>
+    <p>
+      I do not collect any data about your activity on this site. You can create your own account to access more functionality.
+      For this, please do not use the same password, which you use in other websites or domains. I am asking this, because I do not want to take responsibility for any sensitive data.
+      Obviously, I try to secure the account informations and data in every way and I do not store your password directly, even I as the developer cannot see it.
+    </p>
+  </div>
+  <div class="col-sm-4">
+    <img src="~/images/Me.jpg" />
+  </div>
+</div>

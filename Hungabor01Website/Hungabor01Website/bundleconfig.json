@@ -22,5 +22,11 @@
     "inputFiles": [
       "wwwroot/css/login_registration.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Privacy.min.css",
+    "inputFiles": [
+      "wwwroot/css/Privacy.css"
+    ]
   }
 ]
