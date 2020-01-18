@@ -55,7 +55,7 @@ namespace Hungabor01Website
 
       //Repositories
       services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-      services.AddScoped<ITestEntityRepository, TestEntityRepository>();
+      services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 
       //DbContext
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
@@ -66,7 +66,7 @@ namespace Hungabor01Website
           options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")));
 
       //Entities
-      services.AddScoped<TestEntity>();
+      services.AddScoped<Attachment>();
 
       //Adds the user and role object to the db context
       services.AddIdentity<IdentityUser, IdentityRole>(options =>

@@ -19,9 +19,9 @@ namespace Hungabor01Website.Database
     }
 
     /// <summary>
-    /// TestEntity table
+    /// Attachments table
     /// </summary>
-    public DbSet<TestEntity> TestEntities { get; set; }
+    public DbSet<Attachment> Attachments { get; set; }
 
     /// <summary>
     /// Add the configuration files of the tables here
@@ -31,7 +31,7 @@ namespace Hungabor01Website.Database
     {
       base.OnModelCreating(modelBuilder);
 
-      modelBuilder.ApplyConfiguration(new TestEntityConfiguration());
+      modelBuilder.ApplyConfiguration(new AttachmentConfiguration());
     }
   }
 }
