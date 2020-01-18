@@ -17,6 +17,11 @@ h3 {
 	margin-left: 30px;
 }
 
+.row i {
+	color: blue;
+	margin-right: 5px;
+}
+
 p {
 	margin-top: 10px;
 	text-align: justify;

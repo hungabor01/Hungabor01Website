@@ -46,5 +46,15 @@ namespace Hungabor01Website.Controllers
     {
       return View();
     }
+
+    /// <summary>
+    /// Action to handle the contacts page
+    /// </summary>
+    /// <returns>The Contacts view</returns>
+    [AllowAnonymous]
+    public IActionResult Contacts()
+    {
+      return View();
+    }
   }
 }
