@@ -32,6 +32,10 @@ main {
   background-color: black;
 }
 
+  .footer a {
+    margin-right: 10px;
+  }
+
   .footer.toggled {
     padding-left: 260px;
   }
