@@ -47,5 +47,9 @@
     public const string ForgotPasswordSent = "Password reset email has been sent to {0}.";
     public const string ResetPasswordNotification = "Password has been changed for {0}.\nYou can sign in with your new password.";
     public const string ResetPasswordError = "Could not change password for {0} with toke {1}.";
+
+    //Attribute strings
+    public const string FileExtensionIsNotValid = "This file extension is not allowed!";
+    public const string MaxFileSizeError = "Maximum allowed file size is {0} bytes.";
   }
 }

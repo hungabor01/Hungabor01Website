@@ -10,6 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Hungabor01Website.Constants;
 using Microsoft.Extensions.Logging;
+using Hungabor01Website.Database;
+using Hungabor01Website.Database.Entities;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Hungabor01Website.Controllers
 {
@@ -356,14 +360,29 @@ namespace Hungabor01Website.Controllers
       {
         user = new IdentityUser
         {
-          UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
+          UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
           Email = info.Principal.FindFirstValue(ClaimTypes.Email)
         };
 
-        await userManager.CreateAsync(user);
+        var result = await userManager.CreateAsync(user);
 
-        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        await userManager.ConfirmEmailAsync(user, token);
+        if (result.Succeeded)
+        {
+          var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+          await userManager.ConfirmEmailAsync(user, token);
+        }
+        else
+        {
+          var model = new RegisterViewModel();
+          foreach (var error in result.Errors)
+          {
+            ModelState.AddModelError(string.Empty, error.Description);
+            logger.LogWarning(EventIds.RegisterExternalCreateUserError,
+              string.Format(Strings.AccountError, error.Description, user.UserName));
+          }
+
+          return View("Register", model);
+        }
       }
 
       await userManager.AddLoginAsync(user, info);
@@ -483,11 +502,124 @@ namespace Hungabor01Website.Controllers
     /// <summary>
     /// Logout action
     /// </summary>
-    /// <returns>Asynchronous logout to the home view</returns> 
+    /// <returns>Asynchronous logout to the home view</returns>     
     public async Task<IActionResult> Logout()
     {
       await signInManager.SignOutAsync();
       return RedirectToAction("index", "home");
+    }
+
+    /// <summary>
+    /// Get action of the EditAccount view
+    /// </summary>
+    /// <returns>EditAccount view</returns>
+    [HttpGet]
+    public IActionResult EditAccount()
+    {      
+      return View();
+    }
+
+    /// <summary>
+    /// Proceses the changes of the user account
+    /// </summary>
+    /// <param name="model">EditAccount view model</param>
+    /// <returns>EditAccount view</returns>
+    [HttpPost]
+    public async Task<IActionResult> EditAccount(EditAccountViewModel model)
+    {
+      if (ModelState.IsValid && model.ProfilePicture != null)
+      {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);       
+
+        using (var unitOfWork = serviceProvider.GetService<IUnitOfWork>())
+        {
+          var attachment = unitOfWork.Attachments.SingleOrDefault(
+            x => x.User.Id == userId && x.Type == AttachmentType.ProfilePicture);
+          if (attachment == null)
+          {
+            attachment = new Attachment()
+            {
+              User = await userManager.FindByIdAsync(userId),
+              Type = AttachmentType.ProfilePicture,
+              Filename = Path.GetFileNameWithoutExtension(model.ProfilePicture.FileName),
+              Extension = Path.GetExtension(model.ProfilePicture.FileName),            
+              Data = ConvertFileToBytes(model.ProfilePicture)
+            };
+
+            unitOfWork.Attachments.Add(attachment);
+          }
+          else
+          {
+            attachment.Filename = Path.GetFileNameWithoutExtension(model.ProfilePicture.FileName);
+            attachment.Extension = Path.GetExtension(model.ProfilePicture.FileName);     
+            attachment.Data = ConvertFileToBytes(model.ProfilePicture);
+          }
+
+          unitOfWork.Complete();
+        }
+      }
+      return View();
+    }
+
+    private byte[] ConvertFileToBytes(IFormFile file)
+    {      
+      byte[] fileBytes = null;
+      using (var ms = new MemoryStream())
+      {
+        file.CopyTo(ms);
+        fileBytes = ms.ToArray();
+      }
+      return fileBytes;
+    }
+    
+    /// <summary>
+    /// Serves the uploaded image of the user or the default blankuser.jpg
+    /// </summary>
+    /// <returns>The image as file</returns>
+    public async Task<FileResult> GetProfilePicture()
+    {
+      using (var unitOfWork = serviceProvider.GetService<IUnitOfWork>())
+      {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId != null)
+        {
+          var attachment = unitOfWork.Attachments.SingleOrDefault(
+            x => x.User.Id == userId && x.Type == AttachmentType.ProfilePicture);
+          if (attachment != null)
+          {
+            return File(attachment.Data, "image/" + attachment.Extension);
+          }
+        }
+      }
+
+      var filePath = Path.Combine(
+        Directory.GetCurrentDirectory(), "wwwroot", "images", "blankuser.jpg");
+
+      var file = await System.IO.File.ReadAllBytesAsync(filePath);
+
+      return File(file, "image/jpg");
+    }   
+    
+    /// <summary>
+    /// Removes the profile picture from the database for the current user
+    /// </summary>
+    /// <returns></returns>
+    public IActionResult DeleteProfilePicture()
+    {
+      var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+      using (var unitOfWork = serviceProvider.GetService<IUnitOfWork>())
+      {
+        var attachment = unitOfWork.Attachments.SingleOrDefault(
+          x => x.User.Id == userId && x.Type == AttachmentType.ProfilePicture);
+
+        unitOfWork.Attachments.Remove(attachment);
+
+        unitOfWork.Complete();
+      }   
+
+      return View("EditAccount");
     }
   }
 }

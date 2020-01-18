@@ -9,7 +9,10 @@ namespace Hungabor01Website.Database
   /// </summary>
   public interface IUnitOfWork : IDisposable
   {
-    public ITestEntityRepository TestEntities { get; }
+    /// <summary>
+    /// Attachments table
+    /// </summary>
+    public IAttachmentRepository Attachments { get; }
 
     /// <summary>
     /// Commits the changes to the database

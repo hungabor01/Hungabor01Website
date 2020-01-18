@@ -9,17 +9,17 @@ namespace Hungabor01Website.Database
   {
     private readonly WebsiteDbContext context;
 
-    public ITestEntityRepository TestEntities { get; }
+    public IAttachmentRepository Attachments { get; }
 
     public UnitOfWork(
       WebsiteDbContext context,
-      ITestEntityRepository testEntities)
+      IAttachmentRepository testEntities)
     {
       this.context = context;
-      TestEntities = testEntities;
+      Attachments = testEntities;
 
       //Must initailize the repositories with the context to work
-      TestEntities.InitRepository(context);
+      Attachments.InitRepository(context);
     }
 
     public int Complete()
