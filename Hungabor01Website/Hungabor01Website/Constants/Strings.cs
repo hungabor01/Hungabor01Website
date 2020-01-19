@@ -45,7 +45,7 @@
     public const string UsernameIsTaken = "Username {0} is already in use.";
 
     public const string ForgotPasswordSent = "Password reset email has been sent to {0}.";
-    public const string ResetPasswordNotification = "Password has been changed for {0}.\nYou can sign in with your new password.";
+    public const string ResetPasswordNotification = "Password has been changed for {0}.\nYou can use your new password from now on.";
     public const string ResetPasswordError = "Could not change password for {0} with toke {1}.";
 
     //Attribute strings

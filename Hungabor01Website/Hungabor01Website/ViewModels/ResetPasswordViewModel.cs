@@ -10,7 +10,6 @@ namespace Hungabor01Website.ViewModels
     /// <summary>
     /// Email of the user (hidden)
     /// </summary>
-    [Required]
     [EmailAddress]
     public string Email { get; set; }
 

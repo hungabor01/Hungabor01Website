@@ -449,9 +449,9 @@ namespace Hungabor01Website.Controllers
     [AllowAnonymous]
     public IActionResult ResetPassword(string token, string email)
     {
-      if (token == null || email == null)
+      if ((token == null || email == null) && !signInManager.IsSignedIn(User))
       {
-        RedirectToAction("index", "home");
+        return  RedirectToAction("index", "home");
       }
 
       var model = new ResetPasswordViewModel
@@ -477,7 +477,18 @@ namespace Hungabor01Website.Controllers
         return View(model);
       }
 
-      var user = await userManager.FindByEmailAsync(model.Email);
+      IdentityUser user;
+      if (signInManager.IsSignedIn(User))
+      {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        user = await userManager.FindByIdAsync(userId);
+        model.Email = user.Email;
+        model.Token = await userManager.GeneratePasswordResetTokenAsync(user);
+      }
+      else
+      {
+        user = await userManager.FindByEmailAsync(model.Email);
+      }
 
       if (user != null)
       {
