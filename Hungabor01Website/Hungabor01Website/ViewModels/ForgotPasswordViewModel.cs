@@ -3,7 +3,7 @@
 namespace Hungabor01Website.ViewModels
 {
   /// <summary>
-  /// Viewmodel to transfer data from ForgotPassword action to the view
+  /// ViewModel for ForgotPassword view
   /// </summary>
   public class ForgotPasswordViewModel
   {

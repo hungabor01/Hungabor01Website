@@ -4,20 +4,26 @@ using System;
 namespace Hungabor01Website.Database
 {  
   /// <summary>
-  /// The main database connection component. It represents a connection to the database.
+  /// The main database connection component
+  /// It represents a single work unit on the database
   /// Add the repository interfaces here
   /// </summary>
   public interface IUnitOfWork : IDisposable
   {
     /// <summary>
-    /// Attachments table
+    /// Repository of the Attachments table
     /// </summary>
-    public IAttachmentRepository Attachments { get; }
+    public IAttachmentRepository AttachmentRepository { get; }
+
+    /// <summary>
+    /// Repository of the AccountHistories table
+    /// </summary>
+    public IAccountHistoryRepository AccountHistoryRepository { get; }
 
     /// <summary>
     /// Commits the changes to the database
     /// </summary>
     /// <returns>Number of the modified entries</returns>
-    int Complete();
+    public int Complete();
   }
 }

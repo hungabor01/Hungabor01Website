@@ -3,7 +3,7 @@
 namespace Hungabor01Website.ViewModels
 {
   /// <summary>
-  /// Viewmodel to transfer data from Login action to the view
+  /// ViewModel for Login view
   /// </summary>
   public class LoginViewModel
   {

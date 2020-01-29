@@ -14,9 +14,9 @@ namespace Hungabor01Website.ViewModels.CustomAttributes
   {
     private readonly string[] extensions;
 
-    public AllowedExtensionsAttribute(string[] extensions)
+    public AllowedExtensionsAttribute(params string[] extensions)
     {
-      this.extensions = extensions;
+      this.extensions = extensions.Select(x => x.ToLower()).ToArray();
     }
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -27,7 +27,7 @@ namespace Hungabor01Website.ViewModels.CustomAttributes
         
         var extension = Path.GetExtension(file?.FileName);
 
-        if (extension != null && !extensions.Contains(extension.ToLower()))
+        if (string.IsNullOrWhiteSpace(extension) || !extensions.Contains(extension.ToLower()))
         {
           return new ValidationResult(Strings.FileExtensionIsNotValid);
         }

@@ -5,21 +5,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Hungabor01Website.Database.Configuration
 {
   /// <summary>
-  /// Configuration for the Attachment table
+  /// Configuration for the Attachments table
   /// </summary>
   public class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
   {
     public void Configure(EntityTypeBuilder<Attachment> builder)
     {
-
       builder.Property(x => x.Filename)
         .IsRequired();
-      
+
       builder.Property(x => x.Extension)
         .IsRequired();
 
       builder.Property(x => x.Data)
         .IsRequired();
+
+      builder.HasOne(a => a.User)
+        .WithMany(user => user.Attachments)
+        .HasForeignKey(a => a.UserId);
     }
   }
 }

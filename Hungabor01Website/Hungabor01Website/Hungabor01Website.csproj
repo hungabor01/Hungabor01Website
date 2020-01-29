@@ -3,6 +3,22 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\20200129115840_test.cs" />
+    <Compile Remove="Migrations\20200129115840_test.Designer.cs" />
+    <Compile Remove="Migrations\20200129123530_test.cs" />
+    <Compile Remove="Migrations\20200129123530_test.Designer.cs" />
+    <Compile Remove="Migrations\20200129123747_test.cs" />
+    <Compile Remove="Migrations\20200129123747_test.Designer.cs" />
+    <Compile Remove="Migrations\20200129124825_test.cs" />
+    <Compile Remove="Migrations\20200129124825_test.Designer.cs" />
+    <Compile Remove="Migrations\20200129124953_test.cs" />
+    <Compile Remove="Migrations\20200129124953_test.Designer.cs" />
+    <Compile Remove="Migrations\20200129125656_test.cs" />
+    <Compile Remove="Migrations\20200129125656_test.Designer.cs" />
+    <Compile Remove="Migrations\20200129130302_test.cs" />
+    <Compile Remove="Migrations\20200129130302_test.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Remove="bundleconfig.json" />
   </ItemGroup>
   <ItemGroup>

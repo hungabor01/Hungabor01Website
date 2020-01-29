@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace Hungabor01Website.Database.Repositories
 {
   /// <summary>
-  /// Generic class for the repository components, the tables.
+  /// Generic class for the repository components, the tables
   /// </summary>
   /// <typeparam name="TEntity">The table of the repository.</typeparam>
   public class Repository<TEntity> : IRepository<TEntity> where TEntity : class

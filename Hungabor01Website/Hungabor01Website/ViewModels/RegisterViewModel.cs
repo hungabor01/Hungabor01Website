@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Hungabor01Website.ViewModels
 {
   /// <summary>
-  /// Viewmodel to transfer data from Register action to the view
+  /// ViewModel for Register view
   /// </summary>
   public class RegisterViewModel
   {
@@ -12,7 +12,7 @@ namespace Hungabor01Website.ViewModels
     /// Username of the user (unique)
     /// </summary>
     [Required]
-    [Remote(action: "IsUsernameInUse", controller: "Account")]
+    [Remote(action: "IsUsernameInUse", controller: "Register")]
     public string Username { get; set; }
 
     /// <summary>
@@ -20,7 +20,7 @@ namespace Hungabor01Website.ViewModels
     /// </summary>
     [Required]
     [EmailAddress]
-    [Remote(action: "IsEmailInUse", controller: "Account")]
+    [Remote(action: "IsEmailInUse", controller: "Register")]
     public string Email { get; set; }
 
     /// <summary>
@@ -36,7 +36,6 @@ namespace Hungabor01Website.ViewModels
     [DataType(DataType.Password)]
     [Display(Name = "Confirm password")]
     [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
-    public string ConfirmPassword { get; set; }
-    
+    public string ConfirmPassword { get; set; }    
   }
 }

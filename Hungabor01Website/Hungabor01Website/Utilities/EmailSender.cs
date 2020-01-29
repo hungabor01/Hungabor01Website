@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using MimeKit;
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Hungabor01Website.Utilities
 {
@@ -32,10 +31,10 @@ namespace Hungabor01Website.Utilities
       this.logger = logger;
     }
 
-    public async Task<bool> SendMessageAsync(string email, string subject, string message)
+    public bool SendMessage(string email, string subject, string message)
     {
       var mimeMessage = CreateMimeMessage(email, subject, message);
-      return await SendMimeMessageAsync(mimeMessage);
+      return SendMimeMessage(mimeMessage);
     }
 
     private MimeMessage CreateMimeMessage(string email, string subject, string message)
@@ -58,16 +57,17 @@ namespace Hungabor01Website.Utilities
       return mimeMessage;
     }
 
-    private async Task<bool> SendMimeMessageAsync(MimeMessage mimeMessage)
+    private bool SendMimeMessage(MimeMessage mimeMessage)
     {
+      mimeMessage.ThrowExceptionIfNull(nameof(mimeMessage));
+
       using (var client = new SmtpClient())
       {
         try
         {
           client.Connect(host, port);
           client.Authenticate(username, password);
-          await client.SendAsync(mimeMessage);
-          await client.DisconnectAsync(true);
+          client.Send(mimeMessage);          
           logger.LogInformation(EventIds.ConfirmationEmailSent, mimeMessage.ToString());
           return true;
         }
@@ -75,6 +75,11 @@ namespace Hungabor01Website.Utilities
         {
           logger.LogError(EventIds.ConfirmationEmailSentError, ex, mimeMessage.ToString());
           return false;
+        }
+        finally
+        {
+          if (client.IsConnected)
+            client.Disconnect(true);
         }
       }
     }

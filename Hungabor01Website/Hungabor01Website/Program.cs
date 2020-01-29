@@ -30,11 +30,6 @@ namespace Hungabor01Website
         .ConfigureLogging(logging =>
         {
           logging.AddAzureWebAppDiagnostics();
-
-          //These are overridden by the Azure portal, so actually they don't do anything in production
-          logging.SetMinimumLevel(LogLevel.Information);
-          logging.AddFilter("System", LogLevel.Warning);
-          logging.AddFilter("Microsoft", LogLevel.Warning);
         })
         .ConfigureServices(serviceCollection =>
         {

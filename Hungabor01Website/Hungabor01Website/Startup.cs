@@ -51,25 +51,25 @@ namespace Hungabor01Website
 
       //Database
       //UnitOfWork
-      services.AddScoped<IUnitOfWork, UnitOfWork>();
+      services.AddTransient<IUnitOfWork, UnitOfWork>();
 
       //Repositories
-      services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-      services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+      services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+      services.AddTransient<IAttachmentRepository, AttachmentRepository>();
+      services.AddTransient<IAccountHistoryRepository, AccountHistoryRepository>();  
 
       //DbContext
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         services.AddDbContext<WebsiteDbContext>(options =>
-          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")));
+          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")),
+          ServiceLifetime.Transient);
       else
         services.AddDbContext<WebsiteDbContext>(options =>
-          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")));
-
-      //Entities
-      services.AddScoped<Attachment>();
+          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")),
+          ServiceLifetime.Transient);
 
       //Adds the user and role object to the db context
-      services.AddIdentity<IdentityUser, IdentityRole>(options =>
+      services.AddIdentity<ApplicationUser, IdentityRole>(options =>
       {
         options.SignIn.RequireConfirmedEmail = true;
       })
@@ -99,13 +99,16 @@ namespace Hungabor01Website
       });
 
       //MessageSenders
-      services.AddScoped<IMessageSender, EmailSender>(s => new EmailSender(
+      services.AddTransient<IMessageSender, EmailSender>(s => new EmailSender(
         configuration.GetValue<string>("EmailSender:host"),
         configuration.GetValue<int>("EmailSender:port"),
         configuration.GetValue<string>("EmailSender:username"),
         configuration.GetValue<string>("EmailSender:password"),
         s.GetService<ILogger<EmailSender>>()
       ));
+
+      //Other
+      services.AddTransient<ILoginRegistrationAccountHelper, LoginRegistrationAccountHelper>();
     }
 
     /// <summary>

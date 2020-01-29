@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
+@using Hungabor01Website.Database.Entities
+@inject SignInManager<ApplicationUser> SignInManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +10,7 @@
   <title>@ViewData["Title"] - Hungabor01Website</title>
 
   <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
-
+  <!-- start of styles -->
   <environment include="Development">
     <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
@@ -30,8 +31,8 @@
     <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
   </environment>
-
   @RenderSection("Styles", required: false)
+  <!-- end of styles -->
 </head>
 <body>
   <!-- start of page wrapper -->
@@ -46,20 +47,20 @@
       <div class="sidebar-content">
         <!-- start of nav header -->
         <div class="sidebar-brand">
-          <a asp-controller="Home" asp-action="Index">Hungabor01Website</a>
+          <a asp-action="Index" asp-controller="Home">Hungabor01Website</a>
           <div id="close-sidebar">
             <i class="fas fa-times"></i>
           </div>
         </div>
         <!-- end of nav header -->
         <div class="fixed-items">
-         @if (SignInManager.IsSignedIn(User))
+          @if (SignInManager.IsSignedIn(User))
           {
             <!-- start of account details -->
             <div class="sidebar-header">
               <div class="user-pic">
-                <a asp-controller="account" asp-action="EditAccount">
-                  <img class="img-responsive img-rounded" src="@Url.Action("GetProfilePicture", "account")" alt="User picture">									
+                <a asp-action="EditAccount" asp-controller="Account" >
+                  <img class="img-responsive img-rounded" src="@Url.Action("GetProfilePicture", "account")" alt="User picture">
                 </a>
               </div>
               <div class="user-info">
@@ -70,7 +71,7 @@
             </div>
             <!-- end of account details -->
             <!-- start of account icons -->
-            <div class="sidebar-accounticons">              
+            <div class="sidebar-accounticons">
               <a href="#">
                 <i class="fa fa-bell"></i>
                 <span class="badge badge-pill badge-warning notification">3</span>
@@ -79,10 +80,10 @@
                 <i class="fa fa-envelope"></i>
                 <span class="badge badge-pill badge-success notification">7</span>
               </a>
-              <a asp-controller="account" asp-action="EditAccount">
+              <a asp-action="EditAccount" asp-controller="Account"> 
                 <i class="fa fa-cog"></i>
               </a>
-              <a asp-controller="account" asp-action="logout">
+              <a asp-action="Logout" asp-controller="Account">
                 <i class="fa fa-power-off"></i>
               </a>
             </div>
@@ -93,19 +94,19 @@
             <div class="sidebar-login">
               <ul>
                 <li>
-                  <a class="nav-link" asp-controller="account" asp-action="login">
+                  <a class="nav-link" asp-action="Login" asp-controller="Login">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Sign In</span>
                   </a>
                 </li>
                 <li>
-                  <a class="nav-link" asp-controller="account" asp-action="register">
+                  <a class="nav-link" asp-action="Register" asp-controller="Register">
                     <i class="fas fa-user-plus"></i>
                     <span>Sign up</span>
-                  </a >
-                </li >
-              </ul >
-            </div >
+                  </a>
+                </li>
+              </ul>
+            </div>
           }
           <!-- start of search -->
           <div class="sidebar-search">
@@ -176,11 +177,11 @@
   <!-- start of footer -->
   <footer class="border-top footer text-muted toggled">
     <div class="container">
-      &copy; 2020 - Hungabor01Website - <a asp-controller="Home" asp-action="Privacy">About and Privacy</a><a asp-controller="Home" asp-action="Contacts">Contacts</a>
+      &copy; 2020 - Hungabor01Website - <a asp-action="Privacy" asp-controller="Home">About and Privacy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>
     </div>
   </footer>
   <!-- end of footer -->
-
+  <!-- start of scripts -->
   <script src="~/lib/jquery/jquery.min.js"></script>
   <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
   <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
@@ -192,5 +193,6 @@
     <script src="~/js/site.min.js" asp-append-version="true"></script>
   </environment>
   @RenderSection("Scripts", required: false)
+  <!-- end of scripts -->
 </body>
 </html>
