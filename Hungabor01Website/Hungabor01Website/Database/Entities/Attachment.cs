@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace Hungabor01Website.Database.Entities
+﻿namespace Hungabor01Website.Database.Entities
 {
   /// <summary>
   /// Enum for the type of the attachments
@@ -8,23 +6,28 @@ namespace Hungabor01Website.Database.Entities
   public enum AttachmentType
   {
     None = 0,
-    ProfilePicture
+    ProfilePicture = 1
   }
 
   /// <summary>
-  /// Entity for the Attachment table
+  /// Entity for the table
   /// </summary>
   public class Attachment
   {
     /// <summary>
-    /// Primary key Id for the table
+    /// Primary key for the table
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// Foreign key for related user
+    /// Foreign key for the related user
     /// </summary>
-    public IdentityUser User { get; set; }
+    public string UserId { get; set; }
+
+    /// <summary>
+    /// Navigation property for the realted user
+    /// </summary>
+    public ApplicationUser User { get; set; }
 
     /// <summary>
     /// Type of the attachment

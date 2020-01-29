@@ -9,11 +9,11 @@ namespace Hungabor01Website.ViewModels.CustomAttributes
   /// </summary>
   public class MaxFileSizeAttribute : ValidationAttribute
   {
-    private readonly int maxFileSize;
+    private readonly int maxFileSizeInKb;
 
-    public MaxFileSizeAttribute(int maxFileSize)
+    public MaxFileSizeAttribute(int maxFileSizeInKb)
     {
-      this.maxFileSize = maxFileSize;
+      this.maxFileSizeInKb = maxFileSizeInKb;
     }
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -22,9 +22,9 @@ namespace Hungabor01Website.ViewModels.CustomAttributes
       {
         var file = value as IFormFile;
        
-        if (file?.Length > maxFileSize)
+        if (file == null || file.Length > maxFileSizeInKb)
         {
-          return new ValidationResult(string.Format(Strings.MaxFileSizeError, maxFileSize.ToString()));
+          return new ValidationResult(string.Format(Strings.MaxFileSizeError, maxFileSizeInKb.ToString()));
         }       
       }
 

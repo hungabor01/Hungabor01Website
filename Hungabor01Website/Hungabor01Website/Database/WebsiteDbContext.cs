@@ -6,16 +6,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Hungabor01Website.Database
 {
   /// <summary>
-  /// The database object
+  /// The database component
   /// </summary>
-  public class WebsiteDbContext : IdentityDbContext
+  public class WebsiteDbContext : IdentityDbContext<ApplicationUser>
   {
     /// <summary>
     /// Initializes the database component with the given connection options
     /// </summary>
     public WebsiteDbContext(DbContextOptions<WebsiteDbContext> options) : base(options)
     {
-
     }
 
     /// <summary>
@@ -24,14 +23,20 @@ namespace Hungabor01Website.Database
     public DbSet<Attachment> Attachments { get; set; }
 
     /// <summary>
+    /// AccountHistories table
+    /// </summary>
+    public DbSet<AccountHistory> AccountHistories { get; set; }
+
+    /// <summary>
     /// Add the configuration files of the tables here
     /// </summary>
-    /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       base.OnModelCreating(modelBuilder);
 
       modelBuilder.ApplyConfiguration(new AttachmentConfiguration());
+      modelBuilder.ApplyConfiguration(new AccountHistoryConfiguration());
+      modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
     }
   }
 }

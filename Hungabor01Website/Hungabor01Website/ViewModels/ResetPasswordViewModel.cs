@@ -3,7 +3,7 @@
 namespace Hungabor01Website.ViewModels
 {
   /// <summary>
-  /// ViewModel for Reset Password
+  /// ViewModel for ResetPassword view
   /// </summary>
   public class ResetPasswordViewModel
   {
