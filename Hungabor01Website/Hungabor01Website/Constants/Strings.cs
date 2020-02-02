@@ -9,6 +9,10 @@
     public static readonly string NotifyUserConfirmationEmailSent = "Confirmation email is sent. Please click on the link in the email.";
     public static readonly string NotifyUserConfirmationEmailSentError = "Could not send the confirmation email. Please try again signing up or contact me on hungabor01@gmail.com.";
 
+    public static readonly string EmailRegexPattern =
+      @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+      @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
+
     //Confirmation email
     public static readonly string ConfirmationEmailSubject = "Email confirmation request from {0}.";       
     public static readonly string ConfirmationEmailBody =

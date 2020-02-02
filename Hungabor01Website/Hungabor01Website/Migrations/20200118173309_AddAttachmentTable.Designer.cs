@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hungabor01Website.Migrations
 {
-    [DbContext(typeof(WebsiteDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20200118173309_AddAttachmentTable")]
     partial class AddAttachmentTable
     {

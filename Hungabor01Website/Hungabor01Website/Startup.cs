@@ -5,6 +5,7 @@ using Hungabor01Website.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,12 @@ namespace Hungabor01Website
         options.MaxAge = TimeSpan.FromDays(365);
       });
 
+      services.AddHttpsRedirection(options =>
+      {
+        options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+        options.HttpsPort = 5001;
+      });
+
       //Database
       //UnitOfWork
       services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -60,11 +67,11 @@ namespace Hungabor01Website
 
       //DbContext
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-        services.AddDbContext<WebsiteDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
           options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")),
           ServiceLifetime.Transient);
       else
-        services.AddDbContext<WebsiteDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
           options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")),
           ServiceLifetime.Transient);
 
@@ -73,7 +80,7 @@ namespace Hungabor01Website
       {
         options.SignIn.RequireConfirmedEmail = true;
       })
-      .AddEntityFrameworkStores<WebsiteDbContext>()
+      .AddEntityFrameworkStores<AppDbContext>()
       .AddDefaultTokenProviders();
 
       //Password complexity
@@ -99,12 +106,12 @@ namespace Hungabor01Website
       });
 
       //MessageSenders
-      services.AddTransient<IMessageSender, EmailSender>(s => new EmailSender(
+      services.AddTransient<IMessageSender, SmtpEmailSender>(s => new SmtpEmailSender(
         configuration.GetValue<string>("EmailSender:host"),
         configuration.GetValue<int>("EmailSender:port"),
         configuration.GetValue<string>("EmailSender:username"),
         configuration.GetValue<string>("EmailSender:password"),
-        s.GetService<ILogger<EmailSender>>()
+        s.GetService<ILogger<SmtpEmailSender>>()
       ));
 
       //Other

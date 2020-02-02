@@ -9,14 +9,14 @@ namespace Hungabor01Website.Database
   /// </summary>
   public class UnitOfWork : IUnitOfWork
   {
-    private readonly WebsiteDbContext context;
+    private readonly AppDbContext context;
 
     public IAttachmentRepository AttachmentRepository { get; }
 
     public IAccountHistoryRepository AccountHistoryRepository { get; }
 
     public UnitOfWork(
-      WebsiteDbContext context,
+      AppDbContext context,
       IAttachmentRepository attachments,
       IAccountHistoryRepository accountHistories)
     {

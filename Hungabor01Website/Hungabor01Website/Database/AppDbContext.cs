@@ -8,12 +8,12 @@ namespace Hungabor01Website.Database
   /// <summary>
   /// The database component
   /// </summary>
-  public class WebsiteDbContext : IdentityDbContext<ApplicationUser>
+  public class AppDbContext : IdentityDbContext<ApplicationUser>
   {
     /// <summary>
     /// Initializes the database component with the given connection options
     /// </summary>
-    public WebsiteDbContext(DbContextOptions<WebsiteDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 

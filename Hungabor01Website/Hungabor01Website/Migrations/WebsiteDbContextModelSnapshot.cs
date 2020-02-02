@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hungabor01Website.Migrations
 {
-    [DbContext(typeof(WebsiteDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class WebsiteDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
