@@ -36,7 +36,6 @@ namespace Hungabor01Website.Database
 
       modelBuilder.ApplyConfiguration(new AttachmentConfiguration());
       modelBuilder.ApplyConfiguration(new AccountHistoryConfiguration());
-      modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
     }
   }
 }

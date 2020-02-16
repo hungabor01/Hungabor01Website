@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 
 namespace Hungabor01Website.Database.Entities
 {
@@ -22,7 +21,7 @@ namespace Hungabor01Website.Database.Entities
   }
 
   /// <summary>
-  /// Entity for the Accounthistories table
+  /// Entity for the AccountHistories table
   /// </summary>
   public class AccountHistory
   {

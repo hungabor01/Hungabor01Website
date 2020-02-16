@@ -1,8 +1,9 @@
 ﻿using Hungabor01Website.Database.Entities;
-using Hungabor01Website.Utilities;
+using Hungabor01Website.Database.Repositories.Interfaces;
+using Hungabor01Website.Utilities.Classes;
 using System;
 
-namespace Hungabor01Website.Database.Repositories
+namespace Hungabor01Website.Database.Repositories.Classes
 {
   /// <summary>
   /// The repository class for the custom methods of AcountHistories table

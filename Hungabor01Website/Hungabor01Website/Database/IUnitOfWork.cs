@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Database.Repositories;
+﻿using Hungabor01Website.Database.Repositories.Interfaces;
 using System;
 
 namespace Hungabor01Website.Database

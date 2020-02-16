@@ -10,7 +10,7 @@
   }
 
   /// <summary>
-  /// Entity for the table
+  /// Entity for the Attachments table
   /// </summary>
   public class Attachment
   {
@@ -25,7 +25,7 @@
     public string UserId { get; set; }
 
     /// <summary>
-    /// Navigation property for the realted user
+    /// Navigation property for the related user
     /// </summary>
     public ApplicationUser User { get; set; }
 

@@ -2,8 +2,9 @@
 using Hungabor01Website.Database.Entities;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Hungabor01Website.Utilities.Interfaces;
 
-namespace Hungabor01Website.Utilities
+namespace Hungabor01Website.Utilities.Classes
 {
   /// <summary>
   /// Helper class for the account related controllers

@@ -1,7 +1,7 @@
 ﻿using Hungabor01Website.Database.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Hungabor01Website.Database.Repositories
+namespace Hungabor01Website.Database.Repositories.Interfaces
 {
   /// <summary>
   /// The repository interface for the custom methods of Attachments table
@@ -12,7 +12,7 @@ namespace Hungabor01Website.Database.Repositories
     /// Loads the profile picture of the user
     /// </summary>
     /// <param name="userId">The id of the user</param>
-    /// <returns>The data and the extension of the imageas a tuple</returns>
+    /// <returns>The data and the extension of the imageas as a tuple</returns>
     public (byte[] Data, string Extension)? GetProfilePicture(ApplicationUser user);
 
     /// <summary>

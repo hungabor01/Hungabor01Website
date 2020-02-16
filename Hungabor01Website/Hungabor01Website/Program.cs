@@ -35,7 +35,7 @@ namespace Hungabor01Website
         {
           serviceCollection.Configure<AzureBlobLoggerOptions>(options =>
           {
-            options.BlobName = "log.txt";
+            options.BlobName = "logs.txt";
           });
         })
         .ConfigureWebHostDefaults(webBuilder =>

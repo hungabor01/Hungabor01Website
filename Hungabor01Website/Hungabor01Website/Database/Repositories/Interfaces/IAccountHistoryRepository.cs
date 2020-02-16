@@ -1,6 +1,6 @@
 ﻿using Hungabor01Website.Database.Entities;
 
-namespace Hungabor01Website.Database.Repositories
+namespace Hungabor01Website.Database.Repositories.Interfaces
 {
   /// <summary>
   /// The repository interface for the custom methods of AccountHistories table

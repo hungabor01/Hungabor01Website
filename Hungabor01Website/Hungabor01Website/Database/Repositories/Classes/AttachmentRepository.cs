@@ -1,9 +1,10 @@
 ﻿using Hungabor01Website.Database.Entities;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using Hungabor01Website.Utilities;
+using Hungabor01Website.Database.Repositories.Interfaces;
+using Hungabor01Website.Utilities.Classes;
 
-namespace Hungabor01Website.Database.Repositories
+namespace Hungabor01Website.Database.Repositories.Classes
 {
   /// <summary>
   /// The repository class for the custom methods of Attachments table
@@ -14,12 +15,12 @@ namespace Hungabor01Website.Database.Repositories
     {
       user.ThrowExceptionIfNull(nameof(user));
 
-      var attachment = SingleOrDefault(
+      var profilePicture = SingleOrDefault(
         x => x.User.Id == user.Id && x.Type == AttachmentType.ProfilePicture);
 
-      if (attachment != null)
+      if (profilePicture != null)
       {
-        return (attachment.Data, attachment.Extension);
+        return (profilePicture.Data, profilePicture.Extension);
       }
 
       return null;
@@ -30,12 +31,12 @@ namespace Hungabor01Website.Database.Repositories
       user.ThrowExceptionIfNull(nameof(user));
       file.ThrowExceptionIfNull(nameof(file));
 
-      var attachment = SingleOrDefault(
+      var profilePicture = SingleOrDefault(
         x => x.User.Id == user.Id && x.Type == AttachmentType.ProfilePicture);
 
-      if (attachment == null)
+      if (profilePicture == null)
       {
-        attachment = new Attachment()
+        profilePicture = new Attachment()
         {
           UserId = user.Id,
           Type = AttachmentType.ProfilePicture,
@@ -44,13 +45,13 @@ namespace Hungabor01Website.Database.Repositories
           Data = ConvertFileToBytes(file)
         };
 
-        Add(attachment);
+        Add(profilePicture);
       }
       else
       {
-        attachment.Filename = Path.GetFileNameWithoutExtension(file.FileName);
-        attachment.Extension = Path.GetExtension(file.FileName);
-        attachment.Data = ConvertFileToBytes(file);
+        profilePicture.Filename = Path.GetFileNameWithoutExtension(file.FileName);
+        profilePicture.Extension = Path.GetExtension(file.FileName);
+        profilePicture.Data = ConvertFileToBytes(file);
       }
     }
 
@@ -73,12 +74,12 @@ namespace Hungabor01Website.Database.Repositories
     {
       user.ThrowExceptionIfNull(nameof(user));
 
-      var attachment = SingleOrDefault(
+      var profilePicture = SingleOrDefault(
         x => x.User.Id == user.Id && x.Type == AttachmentType.ProfilePicture);
 
-      if (attachment != null)
+      if (profilePicture != null)
       {
-        Remove(attachment);
+        Remove(profilePicture);
         return true;
       } 
 

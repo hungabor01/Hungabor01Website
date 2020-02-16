@@ -1,6 +1,6 @@
 ﻿using Hungabor01Website.Database.Entities;
 
-namespace Hungabor01Website.Utilities
+namespace Hungabor01Website.Utilities.Interfaces
 {
   /// <summary>
   /// Helper interface for the account related controllers

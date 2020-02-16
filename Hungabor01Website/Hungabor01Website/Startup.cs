@@ -1,18 +1,12 @@
-using Hungabor01Website.Database;
-using Hungabor01Website.Database.Entities;
-using Hungabor01Website.Database.Repositories;
-using Hungabor01Website.Utilities;
+using Hungabor01Website.StartupConfiguration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hungabor01Website
@@ -23,14 +17,16 @@ namespace Hungabor01Website
   public class Startup
   {
     private readonly IConfiguration configuration;
+    private readonly IWebHostEnvironment environment;
 
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
       this.configuration = configuration;
+      this.environment = environment;
     }    
 
     /// <summary>
-    /// Setup the dependency injection here
+    /// Setup of the dependency injection
     /// </summary>
     /// <param name="services">The dependency injection container</param>
     public void ConfigureServices(IServiceCollection services)
@@ -42,7 +38,7 @@ namespace Hungabor01Website
         config.Filters.Add(new AuthorizeFilter(policy));
       });
 
-      //Https
+      //Security
       services.AddHsts(options =>
       {
         options.Preload = true;
@@ -57,65 +53,16 @@ namespace Hungabor01Website
       });
 
       //Database
-      //UnitOfWork
-      services.AddTransient<IUnitOfWork, UnitOfWork>();
+      var databaseConfig = new DatabaseConfiguration(services, configuration, environment);
+      databaseConfig.Configure();
 
-      //Repositories
-      services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-      services.AddTransient<IAttachmentRepository, AttachmentRepository>();
-      services.AddTransient<IAccountHistoryRepository, AccountHistoryRepository>();  
+      //Authentication
+      var authenticationConfig = new AuthenticationConfiguration(services, configuration, environment);
+      authenticationConfig.Configure();
 
-      //DbContext
-      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-        services.AddDbContext<AppDbContext>(options =>
-          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")),
-          ServiceLifetime.Transient);
-      else
-        services.AddDbContext<AppDbContext>(options =>
-          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")),
-          ServiceLifetime.Transient);
-
-      //Adds the user and role object to the db context
-      services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-      {
-        options.SignIn.RequireConfirmedEmail = true;
-      })
-      .AddEntityFrameworkStores<AppDbContext>()
-      .AddDefaultTokenProviders();
-
-      //Password complexity
-      services.Configure<IdentityOptions>(options =>
-      {
-        options.Password.RequiredLength = 10;
-        options.Password.RequiredUniqueChars = 3;
-        options.Password.RequireNonAlphanumeric = false;
-        options.User.RequireUniqueEmail = true;
-      });
-
-      //Add external login providers
-      services.AddAuthentication()
-      .AddGoogle(options =>
-      {
-        options.ClientId = configuration.GetValue<string>("ExternalLoginProviders:Google:ClientId");
-        options.ClientSecret = configuration.GetValue<string>("ExternalLoginProviders:Google:ClientSecret");
-      })
-      .AddFacebook(options =>
-      {
-        options.AppId = configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppId");
-        options.AppSecret = configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppSecret");
-      });
-
-      //MessageSenders
-      services.AddTransient<IMessageSender, SmtpEmailSender>(s => new SmtpEmailSender(
-        configuration.GetValue<string>("EmailSender:host"),
-        configuration.GetValue<int>("EmailSender:port"),
-        configuration.GetValue<string>("EmailSender:username"),
-        configuration.GetValue<string>("EmailSender:password"),
-        s.GetService<ILogger<SmtpEmailSender>>()
-      ));
-
-      //Other
-      services.AddTransient<ILoginRegistrationAccountHelper, LoginRegistrationAccountHelper>();
+      //Utilities
+      var utilitiesConfig = new UtilitiesConfiguration(services, configuration, environment);
+      utilitiesConfig.Configure();
     }
 
     /// <summary>
@@ -151,6 +98,6 @@ namespace Hungabor01Website
           name: "default",
           pattern: "{controller=Home}/{action=Index}/{id?}");
       });
-    }
+    }    
   }
 }

@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hungabor01Website.Database.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Hungabor01Website.Database.Repositories
+namespace Hungabor01Website.Database.Repositories.Classes
 {
   /// <summary>
   /// Generic class for the repository components, the tables
@@ -12,7 +13,7 @@ namespace Hungabor01Website.Database.Repositories
   /// <typeparam name="TEntity">The table of the repository.</typeparam>
   public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
   {
-    protected DbContext Context;
+    protected DbContext Context { get; set; }
 
     public void InitRepository(DbContext context) =>
       Context = context;

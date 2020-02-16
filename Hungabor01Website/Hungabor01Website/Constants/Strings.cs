@@ -1,23 +1,19 @@
 ﻿namespace Hungabor01Website.Constants
 {
   /// <summary>
-  /// Stores the static readonlyant strings
+  /// Stores the strings messages
   /// </summary>
   public static class Strings
   {
     //Email sending
     public static readonly string NotifyUserConfirmationEmailSent = "Confirmation email is sent. Please click on the link in the email.";
     public static readonly string NotifyUserConfirmationEmailSentError = "Could not send the confirmation email. Please try again signing up or contact me on hungabor01@gmail.com.";
-
-    public static readonly string EmailRegexPattern =
-      @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
-      @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
-
+    
     //Confirmation email
     public static readonly string ConfirmationEmailSubject = "Email confirmation request from {0}.";       
     public static readonly string ConfirmationEmailBody =
       "Hey,\n" + 
-      "Thank you for your registration. Please click on the link below to finish your registration.\n" +
+      "Thank you for your signing up. Please click on the link below to finish your registration.\n" +
       "{0}\n" +
       "For further assistance, please contact me on hungabor01@gmail.com";
 

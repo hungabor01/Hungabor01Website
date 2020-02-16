@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Utilities;
+﻿using Hungabor01Website.Utilities.Interfaces;
 using Hungabor01Website.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
