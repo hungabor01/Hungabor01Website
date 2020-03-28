@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DataAccess\Mappers\" />
     <Folder Include="Models\" />
   </ItemGroup>
 </Project>

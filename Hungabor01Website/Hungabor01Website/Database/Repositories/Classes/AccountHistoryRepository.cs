@@ -1,28 +1,28 @@
-﻿using Hungabor01Website.Database.Entities;
+﻿using Hungabor01Website.Database.Core.Entities;
 using Hungabor01Website.Database.Repositories.Interfaces;
-using Hungabor01Website.Utilities.Classes;
+using Hungabor01Website.BusinessLogic.Enums;
 using System;
+using System.Threading.Tasks;
+using Hungabor01Website.Database.Core;
+using Hungabor01Website.BusinessLogic;
 
 namespace Hungabor01Website.Database.Repositories.Classes
 {
-  /// <summary>
-  /// The repository class for the custom methods of AcountHistories table
-  /// </summary>
-  public class AccountHistoryRepository : Repository<AccountHistory>, IAccountHistoryRepository
-  {
-    public void LogUserActionToDatabase(ApplicationUser user, UserActionType type, string description)
+    public class AccountHistoryRepository : Repository<AccountHistory>, IAccountHistoryRepository
     {
-      user.ThrowExceptionIfNull(nameof(user));
+        public async Task LogUserActionToDatabaseAsync(ApplicationUser user, UserActionType type, string description)
+        {
+            user.ThrowExceptionIfNull(nameof(user));
+            
+            var action = new AccountHistory
+            {
+                UserId = user.Id,
+                DateTime = DateTime.Now,
+                Type = type.ToString(),
+                Description = description
+            };
 
-      var action = new AccountHistory
-      {
-        UserId = user.Id,
-        DateTime = DateTime.Now,
-        Type = type,
-        Description = description
-      };
-
-      Add(action);
+            await AddAsync(action);
+        }
     }
-  }
 }

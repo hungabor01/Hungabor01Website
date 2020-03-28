@@ -1,27 +1,30 @@
 ﻿namespace Hungabor01Website.Constants
 {
-  /// <summary>
-  /// Stores the event id-s for logging
-  /// </summary>
-  public static class EventIds
-  {
-    //Errors from Error views
-    public static readonly int ExceptionCodeHandlerError = 3000;
-    public static readonly int UnhandledErrorError = 3001;
+    public static class EventIds
+    {
+        //ErrorController
+        public const int ExceptionCodeHandlerError = 3000;
+        public const int UnhandledErrorError = 3001;
 
-    //Confirmation email
-    public static readonly int ConfirmationEmailSent = 3010;
-    public static readonly int ConfirmationEmailSentError = 3011;
+        //SmtpEmailSender
+        public const int InvalidEmail = 3010;
+        public const int SendEmailError = 3011;
 
-    //Account related events    
-    public static readonly int ConfirmEmailUserIdNullError = 3020;
-    public static readonly int ConfirmEmailCannotConfirmError = 3021;
-    public static readonly int LoginInvalidUsername = 3022;
-    public static readonly int LoginError = 3023;
-    public static readonly int ExternalLoginCallbackError = 3024;
-    public static readonly int ExternalLoginCallbackEmailError = 3025;
-    public static readonly int RegisterCreateUserError = 3026;
-    public static readonly int RegisterExternalCreateUserError = 3027;
-    public static readonly int ResetPasswordError = 3028;
-  }
+        //RegisterController
+        public const int RegisterCreateUserError = 3020;
+        public const int ConfirmEmailUserIdNullError = 3021;
+        public const int ConfirmEmailCannotConfirmError = 3022;
+
+        //LoginController
+        public const int LoginError = 3030;
+        public const int LoginInvalidUsername = 3031;
+        public const int ExternalLoginCallbackError = 3032;
+        public const int ExternalLoginCallbackEmailError = 3033;
+        public const int RegisterExternalCreateUserError = 3034;
+
+        //AccountController
+        public const int ForgotPasswordWrongEmail = 3040;
+        public const int ResetPasswordError = 3041;
+        public const int ResetPasswordWrongUser = 3042;
+    }
 }

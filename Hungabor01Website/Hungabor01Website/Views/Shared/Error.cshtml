@@ -1,14 +1,14 @@
 ﻿@{
-  ViewData["Title"] = "Error";
+    ViewData["Title"] = "Error";
 }
 
 <h3>
-  An error occured while processing your request. The support
-  team is notified and we will start working on the fix as soon as possible.
+    An error occured while processing your request. The support
+    team is notified and we will start working on the fix as soon as possible.
 </h3>
 
 <a asp-action="index" asp-controller="home">
-  <h5>Click here to navigate to the home page</h5>
+    <h5>Click here to navigate to the home page</h5>
 </a>
 
 <h5>Please contact us on hungabor01@gmail.com, if you need further assistance.</h5>
@@ -18,17 +18,17 @@
 <h3>Error Details:</h3>
 
 @if (ViewBag.ErrorCode != null)
- {
-   <div class="alert alert-danger">
-     <h5>Error code</h5>
-     <hr />
-     <p>@ViewBag.ErrorCode</p>
-   </div>
- }
+{
+    <div class="alert alert-danger">
+        <h5>Error code</h5>
+        <hr />
+        <p>@ViewBag.ErrorCode</p>
+    </div>
+}
 
 <div class="alert alert-danger">
-  <h5>Error Message</h5>
-  <hr />
-  <p>@ViewBag.ErrorMessage</p>
+    <h5>Error Message</h5>
+    <hr />
+    <p>@ViewBag.ErrorMessage</p>
 </div>
 

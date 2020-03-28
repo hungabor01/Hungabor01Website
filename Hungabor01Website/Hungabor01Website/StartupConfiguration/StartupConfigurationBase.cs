@@ -4,28 +4,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hungabor01Website.StartupConfiguration
 {
-  /// <summary>
-  /// Base class for the different types of configurations in the DI registration
-  /// </summary>
-  public abstract class StartupConfigurationBase
-  {
-    protected IServiceCollection Services { get; }
-    protected IConfiguration Configuration { get; }
-    protected IWebHostEnvironment Environment { get; }
-
-    public StartupConfigurationBase(
-      IServiceCollection services,
-      IConfiguration configuration,
-      IWebHostEnvironment environment)
+    public abstract class StartupConfigurationBase
     {
-      Services = services;
-      Configuration = configuration;
-      Environment = environment;
-    }
+        protected IServiceCollection Services { get; }
+        protected IConfiguration Configuration { get; }
+        protected IWebHostEnvironment Environment { get; }
 
-    /// <summary>
-    /// Configures and registers the components
-    /// </summary>
-    public abstract void Configure();
-  }
+        public StartupConfigurationBase(
+            IServiceCollection services,
+            IConfiguration configuration,
+            IWebHostEnvironment environment)
+        {
+            Services = services;
+            Configuration = configuration;
+            Environment = environment;
+        }
+
+        public abstract void Configure();
+    }
 }

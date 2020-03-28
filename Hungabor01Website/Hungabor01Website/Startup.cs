@@ -11,93 +11,81 @@ using System;
 
 namespace Hungabor01Website
 {
-  /// <summary>
-  /// Initialization of the web server
-  /// </summary>
-  public class Startup
-  {
-    private readonly IConfiguration configuration;
-    private readonly IWebHostEnvironment environment;
-
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+    public class Startup
     {
-      this.configuration = configuration;
-      this.environment = environment;
-    }    
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-    /// <summary>
-    /// Setup of the dependency injection
-    /// </summary>
-    /// <param name="services">The dependency injection container</param>
-    public void ConfigureServices(IServiceCollection services)
-    {
-      //MVC
-      services.AddControllersWithViews(config =>
-      {
-        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-        config.Filters.Add(new AuthorizeFilter(policy));
-      });
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        {
+            _configuration = configuration;
+            _environment = environment;
+        }    
 
-      //Security
-      services.AddHsts(options =>
-      {
-        options.Preload = true;
-        options.IncludeSubDomains = true;
-        options.MaxAge = TimeSpan.FromDays(365);
-      });
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
 
-      services.AddHttpsRedirection(options =>
-      {
-        options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-        options.HttpsPort = 5001;
-      });
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(365);
+            });
 
-      //Database
-      var databaseConfig = new DatabaseConfiguration(services, configuration, environment);
-      databaseConfig.Configure();
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = _configuration.GetValue<int>("HttpsPort");
+            });           
 
-      //Authentication
-      var authenticationConfig = new AuthenticationConfiguration(services, configuration, environment);
-      authenticationConfig.Configure();
+            var authenticationConfig = new AuthenticationConfiguration(services, _configuration, _environment);
+            authenticationConfig.Configure();
 
-      //Utilities
-      var utilitiesConfig = new UtilitiesConfiguration(services, configuration, environment);
-      utilitiesConfig.Configure();
+            var databaseConfig = new DatabaseConfiguration(services, _configuration, _environment);
+            databaseConfig.Configure();
+
+            var dataAccessConfiguration = new DataAccessConfiguration(services, _configuration, _environment);
+            dataAccessConfiguration.Configure();
+
+            var businessLogicConfiguration = new BusinessLogicConfiguration(services, _configuration, _environment);
+            businessLogicConfiguration.Configure();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error/UnhandledError");
+                app.UseStatusCodePagesWithReExecute("/Error/ErrorCodeHandler/{0}");        
+
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }    
     }
-
-    /// <summary>
-    /// Setup of the request processing pipeline
-    /// </summary>
-    /// <param name="app">Service of the application</param>
-    /// <param name="env">Service of the environment</param>
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-      else
-      {
-        app.UseExceptionHandler("/Error/UnhandledError");
-        app.UseStatusCodePagesWithReExecute("/Error/ErrorCodeHandler/{0}");        
-
-        app.UseHsts();
-      }
-
-      app.UseHttpsRedirection();
-
-      app.UseStaticFiles();
-
-      app.UseRouting();
-
-      app.UseAuthentication();
-
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapControllerRoute(
-          name: "default",
-          pattern: "{controller=Home}/{action=Index}/{id?}");
-      });
-    }    
-  }
 }

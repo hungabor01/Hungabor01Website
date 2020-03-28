@@ -1,43 +1,37 @@
-﻿using Hungabor01Website.Database;
-using Hungabor01Website.Database.Entities;
+﻿using Hungabor01Website.Database.Core;
 
 namespace Hungabor01Website.Tests.Helpers
 {
-  public class IdentityHelper
-  {
-    public ApplicationUser TestUser { get; }
-    
-    public IdentityHelper(string userId)
+    public class IdentityHelper
     {
-      TestUser = CreateTestUser(userId);
-    }
+        public ApplicationUser TestUser { get; }
 
-    private ApplicationUser CreateTestUser(string id)
-    {
-      return new ApplicationUser
-      {
-        Id = id,
-      };
-    }
+        public IdentityHelper(string userId)
+        {
+            TestUser = new ApplicationUser
+            {
+                Id = userId,
+            };
+        }
 
-    public void AddTestUser(AppDbContext context)
-    {
-      var testUser = context.Users.Find(TestUser.Id);
-      if (testUser == null)
-      {
-        context.Users.Add(TestUser);
-        context.SaveChanges();
-      }
-    }
+        public void AddTestUser(AppDbContext context)
+        {
+            var testUserInDb = context.Users.Find(TestUser.Id);
+            if (testUserInDb == null)
+            {
+                context.Users.Add(TestUser);
+                context.SaveChanges();
+            }
+        }
 
-    public void RemoveTestUser(AppDbContext context)
-    {
-      var testUser = context.Users.Find(TestUser.Id);
-      if (testUser != null)
-      {
-        context.Users.Remove(TestUser);
-        context.SaveChanges();
-      }
+        public void RemoveTestUser(AppDbContext context)
+        {
+            var testUserInDb = context.Users.Find(TestUser.Id);
+            if (testUserInDb != null)
+            {
+                context.Users.Remove(TestUser);
+                context.SaveChanges();
+            }
+        }
     }
-  }
 }

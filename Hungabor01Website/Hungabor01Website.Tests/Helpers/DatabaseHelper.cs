@@ -1,29 +1,24 @@
-﻿using Hungabor01Website.Database;
+﻿using Hungabor01Website.Database.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 
 namespace Hungabor01Website.Tests.Helpers
 {
-  public class DatabaseHelper : IDisposable
-  {
-    public AppDbContext Context { get; }
-    
-    public DatabaseHelper(IConfiguration configuration)
-    {  
-      Context = CreateContext(configuration);      
-    }
-
-    private AppDbContext CreateContext(IConfiguration configuration)
+    public class DatabaseHelper : IDisposable
     {
-      var options = new DbContextOptionsBuilder<AppDbContext>();
-      options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal"));
-      return new AppDbContext(options.Options);
-    }
+        public AppDbContext Context { get; }
 
-    public void Dispose()
-    {
-      Context.Dispose();
+        public DatabaseHelper(IConfiguration configuration)
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>();
+            options.UseSqlServer(configuration.GetConnectionString("AppDbContextLocal"));
+            Context = new AppDbContext(options.Options);
+        }
+
+        public void Dispose()
+        {
+            Context.Dispose();
+        }
     }
-  }
 }

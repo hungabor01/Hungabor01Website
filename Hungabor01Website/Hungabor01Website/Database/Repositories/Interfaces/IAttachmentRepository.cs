@@ -1,32 +1,16 @@
-﻿using Hungabor01Website.Database.Entities;
+﻿using Hungabor01Website.Database.Core;
+using Hungabor01Website.Database.Core.Entities;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Hungabor01Website.Database.Repositories.Interfaces
 {
-  /// <summary>
-  /// The repository interface for the custom methods of Attachments table
-  /// </summary>
-  public interface IAttachmentRepository : IRepository<Attachment>
-  {
-    /// <summary>
-    /// Loads the profile picture of the user
-    /// </summary>
-    /// <param name="userId">The id of the user</param>
-    /// <returns>The data and the extension of the imageas as a tuple</returns>
-    public (byte[] Data, string Extension)? GetProfilePicture(ApplicationUser user);
+    public interface IAttachmentRepository : IRepository<Attachment>
+    {
+        public Task<(byte[] Data, string Extension)?> GetProfilePictureAsync(ApplicationUser user);
 
-    /// <summary>
-    /// Changes the profile picture of the user
-    /// </summary>
-    /// <param name="user">The user, whose image is getting changed</param>
-    /// <param name="file">The new image</param>
-    public void ChangeProfilePicture(ApplicationUser user, IFormFile file);
+        public Task UploadProfilePictureAsync(ApplicationUser user, IFormFile file);
 
-    /// <summary>
-    /// Deletes the profile picture of the user
-    /// </summary>
-    /// <param name="userId">The user, whose picture is getting deleted</param>
-    /// <returns>Whether it was successfull or not</returns>
-    public bool DeleteProfilePicture(ApplicationUser user);
-  }
+        public Task<bool> DeleteProfilePictureAsync(ApplicationUser user);
+    }
 }
