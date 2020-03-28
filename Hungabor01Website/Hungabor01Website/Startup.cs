@@ -1,149 +1,91 @@
-using Hungabor01Website.Database;
-using Hungabor01Website.Database.Entities;
-using Hungabor01Website.Database.Repositories;
-using Hungabor01Website.Utilities;
+using Hungabor01Website.StartupConfiguration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hungabor01Website
 {
-  /// <summary>
-  /// Initialization of the web server
-  /// </summary>
-  public class Startup
-  {
-    private readonly IConfiguration configuration;
-
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-      this.configuration = configuration;
-    }    
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-    /// <summary>
-    /// Setup the dependency injection here
-    /// </summary>
-    /// <param name="services">The dependency injection container</param>
-    public void ConfigureServices(IServiceCollection services)
-    {
-      //MVC
-      services.AddControllersWithViews(config =>
-      {
-        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-        config.Filters.Add(new AuthorizeFilter(policy));
-      });
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        {
+            _configuration = configuration;
+            _environment = environment;
+        }    
 
-      //Https
-      services.AddHsts(options =>
-      {
-        options.Preload = true;
-        options.IncludeSubDomains = true;
-        options.MaxAge = TimeSpan.FromDays(365);
-      });
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
 
-      //Database
-      //UnitOfWork
-      services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(365);
+            });
 
-      //Repositories
-      services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-      services.AddTransient<IAttachmentRepository, AttachmentRepository>();
-      services.AddTransient<IAccountHistoryRepository, AccountHistoryRepository>();  
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = _configuration.GetValue<int>("HttpsPort");
+            });           
 
-      //DbContext
-      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-        services.AddDbContext<WebsiteDbContext>(options =>
-          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextLocal")),
-          ServiceLifetime.Transient);
-      else
-        services.AddDbContext<WebsiteDbContext>(options =>
-          options.UseSqlServer(configuration.GetConnectionString("WebsiteDbContextAzure")),
-          ServiceLifetime.Transient);
+            var authenticationConfig = new AuthenticationConfiguration(services, _configuration, _environment);
+            authenticationConfig.Configure();
 
-      //Adds the user and role object to the db context
-      services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-      {
-        options.SignIn.RequireConfirmedEmail = true;
-      })
-      .AddEntityFrameworkStores<WebsiteDbContext>()
-      .AddDefaultTokenProviders();
+            var databaseConfig = new DatabaseConfiguration(services, _configuration, _environment);
+            databaseConfig.Configure();
 
-      //Password complexity
-      services.Configure<IdentityOptions>(options =>
-      {
-        options.Password.RequiredLength = 10;
-        options.Password.RequiredUniqueChars = 3;
-        options.Password.RequireNonAlphanumeric = false;
-        options.User.RequireUniqueEmail = true;
-      });
+            var dataAccessConfiguration = new DataAccessConfiguration(services, _configuration, _environment);
+            dataAccessConfiguration.Configure();
 
-      //Add external login providers
-      services.AddAuthentication()
-      .AddGoogle(options =>
-      {
-        options.ClientId = configuration.GetValue<string>("ExternalLoginProviders:Google:ClientId");
-        options.ClientSecret = configuration.GetValue<string>("ExternalLoginProviders:Google:ClientSecret");
-      })
-      .AddFacebook(options =>
-      {
-        options.AppId = configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppId");
-        options.AppSecret = configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppSecret");
-      });
+            var businessLogicConfiguration = new BusinessLogicConfiguration(services, _configuration, _environment);
+            businessLogicConfiguration.Configure();
+        }
 
-      //MessageSenders
-      services.AddTransient<IMessageSender, EmailSender>(s => new EmailSender(
-        configuration.GetValue<string>("EmailSender:host"),
-        configuration.GetValue<int>("EmailSender:port"),
-        configuration.GetValue<string>("EmailSender:username"),
-        configuration.GetValue<string>("EmailSender:password"),
-        s.GetService<ILogger<EmailSender>>()
-      ));
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error/UnhandledError");
+                app.UseStatusCodePagesWithReExecute("/Error/ErrorCodeHandler/{0}");        
 
-      //Other
-      services.AddTransient<ILoginRegistrationAccountHelper, LoginRegistrationAccountHelper>();
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }    
     }
-
-    /// <summary>
-    /// Setup of the request processing pipeline
-    /// </summary>
-    /// <param name="app">Service of the application</param>
-    /// <param name="env">Service of the environment</param>
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-      else
-      {
-        app.UseExceptionHandler("/Error/UnhandledError");
-        app.UseStatusCodePagesWithReExecute("/Error/ErrorCodeHandler/{0}");        
-
-        app.UseHsts();
-      }
-
-      app.UseHttpsRedirection();
-
-      app.UseStaticFiles();
-
-      app.UseRouting();
-
-      app.UseAuthentication();
-
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapControllerRoute(
-          name: "default",
-          pattern: "{controller=Home}/{action=Index}/{id?}");
-      });
-    }
-  }
 }

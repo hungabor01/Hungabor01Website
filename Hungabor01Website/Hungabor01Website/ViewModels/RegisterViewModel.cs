@@ -3,39 +3,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Hungabor01Website.ViewModels
 {
-  /// <summary>
-  /// ViewModel for Register view
-  /// </summary>
-  public class RegisterViewModel
-  {
-    /// <summary>
-    /// Username of the user (unique)
-    /// </summary>
-    [Required]
-    [Remote(action: "IsUsernameInUse", controller: "Register")]
-    public string Username { get; set; }
+    public class RegisterViewModel
+    {
+        [Required]
+        [Remote(action: "IsUsernameInUse", controller: "Register")]
+        public string Username { get; set; }
 
-    /// <summary>
-    /// Email of the user (unique)
-    /// </summary>
-    [Required]
-    [EmailAddress]
-    [Remote(action: "IsEmailInUse", controller: "Register")]
-    public string Email { get; set; }
+        [Required]
+        [EmailAddress]
+        [Remote(action: "IsEmailInUse", controller: "Register")]
+        public string Email { get; set; }
 
-    /// <summary>
-    /// Password of the user
-    /// </summary>
-    [Required]
-    [DataType(DataType.Password)]
-    public string Password { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
 
-    /// <summary>
-    /// Password confirmation
-    /// </summary>
-    [DataType(DataType.Password)]
-    [Display(Name = "Confirm password")]
-    [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
-    public string ConfirmPassword { get; set; }    
-  }
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+    }
 }

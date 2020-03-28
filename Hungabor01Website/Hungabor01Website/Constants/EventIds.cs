@@ -1,27 +1,30 @@
 ﻿namespace Hungabor01Website.Constants
 {
-  /// <summary>
-  /// Stores the event id-s for logging
-  /// </summary>
-  public static class EventIds
-  {
-    //Confirmation email
-    public const int ConfirmationEmailSent = 3000;
-    public const int ConfirmationEmailSentError = 3001;
+    public static class EventIds
+    {
+        //ErrorController
+        public const int ExceptionCodeHandlerError = 3000;
+        public const int UnhandledErrorError = 3001;
 
-    //Account related events
-    public const int RegisterCreateUserError = 3010;
-    public const int ConfirmEmailUserIdNullError = 3011;
-    public const int ConfirmEmailCannotConfirmError = 3012;
-    public const int LoginInvalidUsername = 3013;
-    public const int LoginError = 3014;
-    public const int ExternalLoginCallbackError = 3015;
-    public const int ExternalLoginCallbackEmailError = 3016;
-    public const int ResetPasswordError = 3017;
-    public const int RegisterExternalCreateUserError = 3018;
+        //SmtpEmailSender
+        public const int InvalidEmail = 3010;
+        public const int SendEmailError = 3011;
 
-    //Errors from Error views
-    public const int ExceptionCodeHandlerError = 3030;
-    public const int UnhandledErrorError = 3031;
-  }
+        //RegisterController
+        public const int RegisterCreateUserError = 3020;
+        public const int ConfirmEmailUserIdNullError = 3021;
+        public const int ConfirmEmailCannotConfirmError = 3022;
+
+        //LoginController
+        public const int LoginError = 3030;
+        public const int LoginInvalidUsername = 3031;
+        public const int ExternalLoginCallbackError = 3032;
+        public const int ExternalLoginCallbackEmailError = 3033;
+        public const int RegisterExternalCreateUserError = 3034;
+
+        //AccountController
+        public const int ForgotPasswordWrongEmail = 3040;
+        public const int ResetPasswordError = 3041;
+        public const int ResetPasswordWrongUser = 3042;
+    }
 }
