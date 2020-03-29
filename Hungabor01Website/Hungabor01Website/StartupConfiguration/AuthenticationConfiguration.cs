@@ -44,6 +44,8 @@ namespace Hungabor01Website.StartupConfiguration
                     options.AppId = Configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppId");
                     options.AppSecret = Configuration.GetValue<string>("ExternalLoginProviders:Facebook:AppSecret");
                 });
+
+            Services.ConfigureApplicationCookie(o => o.LoginPath = "/Login/Login");
         }    
     }
 }

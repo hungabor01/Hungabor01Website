@@ -24,13 +24,19 @@ namespace Hungabor01Website
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             services.AddControllersWithViews(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
-            });
+            });            
 
             services.AddHsts(options =>
             {
@@ -43,7 +49,7 @@ namespace Hungabor01Website
             {
                 options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
                 options.HttpsPort = _configuration.GetValue<int>("HttpsPort");
-            });           
+            });            
 
             var authenticationConfig = new AuthenticationConfiguration(services, _configuration, _environment);
             authenticationConfig.Configure();
@@ -55,7 +61,7 @@ namespace Hungabor01Website
             dataAccessConfiguration.Configure();
 
             var businessLogicConfiguration = new BusinessLogicConfiguration(services, _configuration, _environment);
-            businessLogicConfiguration.Configure();
+            businessLogicConfiguration.Configure();            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -75,6 +81,8 @@ namespace Hungabor01Website
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            app.UseCookiePolicy();
 
             app.UseRouting();
 
