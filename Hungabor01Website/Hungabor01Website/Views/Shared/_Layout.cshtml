@@ -126,21 +126,23 @@
                 <div class="sidebar-menu">
                     <ul>
                         <li class="header-menu">
-                            <span>General</span>
+                            <span>Menu</span>
+                        </li>
+                        <li>
+                            <a asp-action="Index" asp-controller="Home">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                            </a>
                         </li>
                         <li class="sidebar-dropdown">
                             <a href="#">
-                                <i class="fa fa-tachometer-alt"></i>
-                                <span>Dashboard</span>
-                                <span class="badge badge-pill badge-warning">New</span>
+                                <i class="fas fa-laptop-code"></i>
+                                <span>Articles</span>
                             </a>
                             <div class="sidebar-submenu">
                                 <ul>
                                     <li>
-                                        <a href="#">
-                                            Dashboard 1
-                                            <span class="badge badge-pill badge-success">Pro</span>
-                                        </a>
+                                        <a href="#">Dashboard 1</a>
                                     </li>
                                     <li>
                                         <a href="#">Dashboard 2</a>
@@ -152,10 +154,9 @@
                             </div>
                         </li>
                         <li>
-                            <a href="#">
-                                <i class="fa fa-book"></i>
-                                <span>Documentation</span>
-                                <span class="badge badge-pill badge-primary">Beta</span>
+                            <a asp-action="Index" asp-controller="LearningMaterials">
+                                <i class="fas fa-book-open"></i>
+                                <span>Learning Materials</span>
                             </a>
                         </li>
                     </ul>
@@ -164,8 +165,9 @@
             </div>
         </nav>
         <!-- end of navigation -->
-        <!-- start of page-content -->
+        <!-- start of page-content -->        
         <main class="page-content toggled">
+            <partial name="_CookieConsentPartial" />
             <div class="container-fluid">
                 @RenderBody()
             </div>
@@ -176,7 +178,7 @@
     <!-- start of footer -->
     <footer class="border-top footer text-muted toggled">
         <div class="container">
-            &copy; 2020 - Hungabor01Website - <a asp-action="Privacy" asp-controller="Home">About and Privacy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>
+            &copy; 2020 - Hungabor01Website - <a asp-action="Privacy" asp-controller="Home">Privacy Policy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>
         </div>
     </footer>
     <!-- end of footer -->

@@ -1,8 +1,81 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome on Hungabor01Website</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <environment include="Development">
+        <link href="~/css/Index.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/Index.min.css" rel="stylesheet" />
+    </environment>
+}
+
+<div class="banner">
+    <h1>Welcome on my website!</h1>
 </div>
+
+<div class="row">
+
+    <div class="col-sm-8">
+
+        <p>I am Gábor Gróf, a hungarian .Net developer. I own, maintain and develop this site.</p>
+
+        <p>I have created this website for multiple reasons.</p>
+
+        <p>
+            First, I collected here some of my commonly used projects and features as references for my work. These are presented as articles with full source code and brief description.
+            My goal is not to teach these techniques, but to explain the idea and the motivation what and why they are implemented as they are.
+        <p />
+
+        <p>
+            Secondly, this website is also a reference itself, since it is developed in ASP.Net Core MVC. So it works like a practice site for me as well.
+        </p>
+
+        <p>
+            And lastly, the website contains some functionality just for myself. These are hidden behind registration, but accessible for anyone with login.
+            They are used in my everyday life, like money management or learning materials. If you think they can be useful for you as well, feel free to use them.
+        </p>
+
+    </div>
+
+    <div class="col-sm-4">
+        <img src="~/images/Me.jpg" />
+    </div>
+
+</div>
+
+<h3>Current content of the website:</h3>
+
+<div class="row">
+    
+    <div id="articles" class="col-sm-6">
+        <a asp-action="Index" asp-controller="Articles">
+            <div class="grid">
+                <h2>Articles</h2>
+                <p>Here are my collection of a few commonly used features with full source code and a brief explanation.</p>
+            </div>
+        </a>
+    </div>
+
+    <div id="materials" class="col-sm-6">
+        <a asp-action="Index" asp-controller="Articles">
+            <div class="grid">
+                <h2>Learning Materials</h2>
+                <p>
+                    I am a self-taught programmer, who learnt almost everything from the internet with practice.
+                    So I collected the path I walked through since the beginning and tried to structure my collected materials with their sources. 
+                    I am not sure they are completely good for anybody to learn, because the materials were not written with this purpose.
+                </p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="contact">
+    <p>
+        If you have any question or suggestion regarding the website or the look of it, I welcome every idea. Feel free to contact me any time.
+        Note that this site is always under implementation, so the content might change from time to time.
+    </p>
+</div>
+

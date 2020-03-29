@@ -1,32 +1,38 @@
 [
-  {
-    "outputFileName": "wwwroot/css/site.min.css",
-    "inputFiles": [
-      "wwwroot/css/site.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/js/site.min.js",
-    "inputFiles": [
-      "wwwroot/js/site.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/Navigation.min.css",
-    "inputFiles": [
-      "wwwroot/css/Navigation.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/login_registration.min.css",
-    "inputFiles": [
-      "wwwroot/css/login_registration.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/Privacy.min.css",
-    "inputFiles": [
-      "wwwroot/css/Privacy.css"
-    ]
-  }
+    {
+        "outputFileName": "wwwroot/css/site.min.css",
+        "inputFiles": [
+            "wwwroot/css/site.css"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/site.min.js",
+        "inputFiles": [
+            "wwwroot/js/site.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/css/Navigation.min.css",
+        "inputFiles": [
+            "wwwroot/css/Navigation.css"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/css/login_registration.min.css",
+        "inputFiles": [
+            "wwwroot/css/login_registration.css"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/css/Privacy.min.css",
+        "inputFiles": [
+            "wwwroot/css/Privacy.css"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/css/Index.min.css",
+        "inputFiles": [
+            "wwwroot/css/Index.css"
+        ]
+    }
 ]
