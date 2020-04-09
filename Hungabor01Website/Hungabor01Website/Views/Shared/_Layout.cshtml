@@ -9,11 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Hungabor01Website</title>
     <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
-    <!-- start of styles -->
+   
     <environment include="Development">
         <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
         <link href="~/css/site.css" rel="stylesheet" />
-        <link href="~/css/navigation.css" rel="stylesheet" />
         <link href="~/lib/font-awesome/css/fontawesome.css" rel="stylesheet" />
         <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
     </environment>
@@ -26,174 +25,97 @@
               asp-fallback-test-value="absolute"
               asp-suppress-fallback-integrity="true" />
         <link href="~/css/site.min.css" rel="stylesheet" />
-        <link href="~/css/navigation.min.css" rel="stylesheet" />
         <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
         <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     </environment>
     @RenderSection("Styles", required: false)
-    <!-- end of styles -->
 </head>
 <body>
-    <!-- start of page wrapper -->
-    <div class="page-wrapper chiller-theme toggled">
-        <!-- start of minimized navigation -->
-        <a id="show-sidebar" class="btn btn-sm btn-dark">
-            <i class="fas fa-bars"></i>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary navigation">
+        <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+            <i class="fas fa-home"></i>
+            Home
         </a>
-        <!-- end of minimized navigation -->
-        <!-- start of navigation -->
-        <nav id="sidebar" class="sidebar-wrapper">
-            <div class="sidebar-content">
-                <!-- start of nav header -->
-                <div class="sidebar-brand">
-                    <a asp-action="Index" asp-controller="Home">Hungabor01Website</a>
-                    <div id="close-sidebar">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </div>
-                <!-- end of nav header -->
-                <div class="fixed-items">
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <!-- start of account details -->
-                        <div class="sidebar-header">
-                            <div class="user-pic">
-                                <a asp-action="EditAccount" asp-controller="Account">
-                                    <img class="img-responsive img-rounded" src="@Url.Action("GetProfilePicture", "account")" alt="User picture">
-                                </a>
-                            </div>
-                            <div class="user-info">
-                                <span class="user-name">
-                                    <strong>@User.Identity.Name</strong>
-                                </span>
-                            </div>
-                        </div>
-                        <!-- end of account details -->
-                        <!-- start of account icons -->
-                        <div class="sidebar-accounticons">
-                            <a href="#">
-                                <i class="fa fa-bell"></i>
-                                <span class="badge badge-pill badge-warning notification">3</span>
-                            </a>
-                            <a href="#">
-                                <i class="fa fa-envelope"></i>
-                                <span class="badge badge-pill badge-success notification">7</span>
-                            </a>
-                            <a asp-action="EditAccount" asp-controller="Account">
-                                <i class="fa fa-cog"></i>
-                            </a>
-                            <a asp-action="Logout" asp-controller="Account">
-                                <i class="fa fa-power-off"></i>
-                            </a>
-                        </div>
-                        <!-- end of account icons -->
-                    }
-                    else
-                    {
-                        <div class="sidebar-login">
-                            <ul>
-                                <li>
-                                    <a class="nav-link" asp-action="Login" asp-controller="Login">
-                                        <i class="fas fa-sign-in-alt"></i>
-                                        <span>Sign In</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" asp-action="Register" asp-controller="Register">
-                                        <i class="fas fa-user-plus"></i>
-                                        <span>Sign up</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    }
-                    <!-- start of search -->
-                    <div class="sidebar-search">
-                        <div>
-                            <div class="input-group">
-                                <input type="text" class="form-control search-menu" placeholder="Search...">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end of search -->
-                </div>
-                <!-- start of navigation menu -->
-                <div class="sidebar-menu">
-                    <ul>
-                        <li class="header-menu">
-                            <span>Menu</span>
-                        </li>
-                        <li>
-                            <a asp-action="Index" asp-controller="Home">
-                                <i class="fas fa-home"></i>
-                                <span>Home</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-laptop-code"></i>
-                                <span>Articles</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="#">Dashboard 1</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Dashboard 2</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Dashboard 3</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li>
-                            <a asp-action="Index" asp-controller="LearningMaterials">
-                                <i class="fas fa-book-open"></i>
-                                <span>Learning Materials</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- end of navigation menu -->
-            </div>
-        </nav>
-        <!-- end of navigation -->
-        <!-- start of page-content -->        
-        <main class="page-content toggled">
-            <partial name="_CookieConsentPartial" />
-            <div class="container-fluid">
-                @RenderBody()
-            </div>
-        </main>
-        <!-- end of page-content -->
-    </div>
-    <!-- end of page wrapper -->
-    <!-- start of footer -->
-    <footer class="border-top footer text-muted toggled">
-        <div class="container">
-            &copy; 2020 - Hungabor01Website - <a asp-action="Privacy" asp-controller="Home">Privacy Policy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse bg-muted" id="menu">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" asp-action="Index" asp-controller="Articles">
+                        <i class="fas fa-laptop-code"></i>
+                        Articles
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" asp-action="Index" asp-controller="LearningMaterials">
+                        <i class="fas fa-book-open"></i>
+                        Learning Materials
+                    </a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 mx-auto">
+                <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-success" type="submit">Search</button>
+            </form>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <strong class="nav-link">@User.Identity.Name</strong>
+                    </li>                    
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-action="EditAccount" asp-controller="Account">
+                            <i class="fa fa-cog"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-action="Logout" asp-controller="Account">
+                            <i class="fa fa-power-off"></i>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-action="EditAccount" asp-controller="Account">
+                            <img src="@Url.Action("GetProfilePicture", "account")" alt="User picture">
+                        </a>
+                    </li>
+                </ul>
+            }
+            else
+            {                
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-action="Login" asp-controller="Login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-action="Register" asp-controller="Register">
+                            <i class="fas fa-user-plus"></i>
+                            Sign up
+                        </a>
+                    </li>
+                </ul>
+            }
         </div>
-    </footer>
-    <!-- end of footer -->
-    <!-- start of scripts -->
+    </nav>
+
+    <div class="content">
+        @RenderBody()
+    </div>
+
+    <div class="footer">        
+        &copy; 2020 - Hungabor01Website - <a asp-action="Privacy" asp-controller="Home">Privacy Policy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>        
+    </div>
+
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
-    <environment include="Development">
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
     @RenderSection("Scripts", required: false)
-    <!-- end of scripts -->
 </body>
 </html>
