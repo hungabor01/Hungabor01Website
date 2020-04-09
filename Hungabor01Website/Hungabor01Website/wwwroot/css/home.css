@@ -1,0 +1,105 @@
+﻿.banner {
+    background-image: url('../images/banner.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    line-height: 150px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+.mejpg {
+    border-radius: 50px;
+    border: 2px solid white;
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.me {
+    min-height: 270px;
+    min-width: 250px;
+}
+
+h1 {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+h3 {
+    margin-bottom: 20px;
+    display: block;
+}
+
+.contenttitle h3 {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.row {
+    margin: 0px;
+}
+
+.row i {
+    color: blue;
+    margin-right: 5px;
+}
+
+p {    
+    margin-bottom: 20px;
+    text-align: justify;
+    display: block;
+}
+
+.grid p{
+    text-align: center;
+    font-size: 22px;
+    color: white;
+    margin: 0px;
+}
+
+.grid h2 {
+    text-align: center;
+    font-size: 30px;
+    color: white;
+}
+
+#articles {
+    background-image: url('../images/articles.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+    border: 2px solid white;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+}
+
+#materials {
+    background-image: url('../images/materials.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+    border: 2px solid white;
+    height: 100%;
+    padding: 20px;
+}
+
+.contact {
+    margin-top: 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+a:hover {
+    text-decoration: none;    
+}
