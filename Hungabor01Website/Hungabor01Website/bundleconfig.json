@@ -6,33 +6,21 @@
         ]
     },
     {
-        "outputFileName": "wwwroot/js/site.min.js",
+        "outputFileName": "wwwroot/css/home.min.css",
         "inputFiles": [
-            "wwwroot/js/site.js"
+            "wwwroot/css/home.css"
         ]
     },
     {
-        "outputFileName": "wwwroot/css/Navigation.min.css",
+        "outputFileName": "wwwroot/css/login.min.css",
         "inputFiles": [
-            "wwwroot/css/Navigation.css"
+            "wwwroot/css/login.css"
         ]
     },
     {
-        "outputFileName": "wwwroot/css/login_registration.min.css",
+        "outputFileName": "wwwroot/css/materials.min.css",
         "inputFiles": [
-            "wwwroot/css/login_registration.css"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/css/Privacy.min.css",
-        "inputFiles": [
-            "wwwroot/css/Privacy.css"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/css/Index.min.css",
-        "inputFiles": [
-            "wwwroot/css/Index.css"
+            "wwwroot/css/materials.css"
         ]
     }
 ]

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Home";
 }
 
 @section Styles {
@@ -24,7 +24,7 @@
         <p>I have created this website for multiple reasons.</p>
 
         <p>
-            First, I collected here some of my commonly used projects and features as references for my work. These are presented as articles with full source code and brief description.
+            First, I have collected here some of my commonly used projects and features as references for my work. These are presented as articles with full source code and brief description.
             My goal is not to teach these techniques, but to explain the idea and the motivation what and why they are implemented as they are. 
             So you can think of this section like my job portfolio.
         <p />
@@ -34,7 +34,7 @@
         </p>
 
         <p>
-            And lastly, the website contains some functionality just for me. These are hidden behind registration, but accessible for anyone with login.
+            And lastly, the website contains some functionalities just for me. These are hidden behind registration, but accessible for anyone with login.
             These features are used in my everyday life, like money management or my collected learning materials. If you think they can be useful for you as well, feel free to use them.
         </p>
 
@@ -56,19 +56,18 @@
         <a asp-action="Index" asp-controller="Articles">
             <div id="articles">
                 <h2>Articles</h2>
-                <p>Here you can find my collection of a few commonly used features with full source code and a brief explanation.</p>
+                <p>Here you can find my collection of a few commonly used features with full source code and brief explanation.</p>
             </div>
         </a>
     </div>
 
     <div class="grid col-lg-6">
-        <a asp-action="Index" asp-controller="Materials">
+        <a asp-action="Index" asp-controller="LearningMaterials">
             <div id="materials">
                 <h2>Learning Materials</h2>
                 <p>
                     I am a self-taught programmer, who learnt almost everything from the internet and with practice.
-                    I have collected the path that I walked through since the beginning and tried to structure these training materials and link their sources.
-                    However, I am not sure they are completely good for anybody to learn, because the materials were not written with this purpose.
+                    I have collected the path that I walked through since the beginning and tried to structure these training materials into a big tutorial.
                 </p>
             </div>
         </a>
@@ -77,7 +76,7 @@
 
 <div class="contact">
     <p>
-        If you have any question or suggestion regarding the website or the look of it, I welcome every idea. Feel free to contact me any time.
+        If you have any questions or suggestions regarding the website or the look of it, I welcome every idea. Feel free to contact me any time.
         Note that this site is always under implementation, so the content might change from time to time.
     </p>
 </div>
