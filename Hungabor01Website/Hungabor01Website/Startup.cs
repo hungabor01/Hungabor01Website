@@ -49,7 +49,9 @@ namespace Hungabor01Website
             {
                 options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
                 options.HttpsPort = _configuration.GetValue<int>("HttpsPort");
-            });            
+            });
+
+            services.AddApplicationInsightsTelemetry();
 
             var authenticationConfig = new AuthenticationConfiguration(services, _configuration, _environment);
             authenticationConfig.Configure();
