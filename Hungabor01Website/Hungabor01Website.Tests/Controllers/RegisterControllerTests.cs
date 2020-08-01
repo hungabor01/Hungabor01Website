@@ -1,8 +1,8 @@
-﻿using Hungabor01Website.BusinessLogic.Enums;
-using Hungabor01Website.Constants.Strings;
+﻿using BusinessLogic.ControllerManagers.Interfaces;
+using Common.Enums;
+using Common.Strings;
+using Database.Core;
 using Hungabor01Website.Controllers;
-using Hungabor01Website.DataAccess.Managers.Interfaces;
-using Hungabor01Website.Database.Core;
 using Hungabor01Website.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -17,13 +17,13 @@ namespace Hungabor01Website.Tests.Controllers
 {
     public class RegisterControllerTests
     {
-        private RegisterController registerController;
+        private RegistrationController _registerController;
 
         private readonly Mock<UserManager<ApplicationUser>> _mockUserManager;
         private readonly Mock<SignInManager<ApplicationUser>> _mockSignInManager;
-        private readonly Mock<ILogger<RegisterController>> _mockLogger;
-        private readonly Mock<IRegistrationManager> _mockManager;
-
+        private readonly Mock<IAccountControllersManager> _mockManager;
+        private readonly Mock<ILogger<RegistrationController>> _mockLogger;
+        
         public RegisterControllerTests()
         {
             var store = new Mock<IUserStore<ApplicationUser>>();
@@ -39,17 +39,18 @@ namespace Hungabor01Website.Tests.Controllers
                 claims.Object,
                 null, null, null, null);
 
-            _mockLogger = new Mock<ILogger<RegisterController>>();
-            _mockManager = new Mock<IRegistrationManager>();
+            _mockManager = new Mock<IAccountControllersManager>();
+
+            _mockLogger = new Mock<ILogger<RegistrationController>>();
         }
 
         private void CreateController()
         {
-            registerController = new RegisterController(
+            _registerController = new RegistrationController(
                 _mockUserManager.Object,
                 _mockSignInManager.Object,
-                _mockLogger.Object,
-                _mockManager.Object);
+                _mockManager.Object,
+                _mockLogger.Object);
         }
 
         [Fact]
@@ -57,7 +58,7 @@ namespace Hungabor01Website.Tests.Controllers
         {
             CreateController();
 
-            var actionResult = registerController.Register();
+            var actionResult = _registerController.Register();
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Null(viewResult.ViewName);
@@ -68,13 +69,13 @@ namespace Hungabor01Website.Tests.Controllers
         {
             CreateController();
 
-            registerController.ModelState.AddModelError(string.Empty, "InvalidModelState");
+            _registerController.ModelState.AddModelError(string.Empty, "InvalidModelState");
 
-            var actionResult = await registerController.Register(new RegisterViewModel());
+            var actionResult = await _registerController.Register(new RegistrationViewModel());
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Null(viewResult.ViewName);
-            Assert.IsType<RegisterViewModel>(viewResult.Model);
+            Assert.IsType<RegistrationViewModel>(viewResult.Model);
         }
 
         [Fact]
@@ -85,11 +86,11 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.Register(new RegisterViewModel());
+            var actionResult = await _registerController.Register(new RegistrationViewModel());
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Null(viewResult.ViewName);
-            Assert.IsType<RegisterViewModel>(viewResult.Model);
+            Assert.IsType<RegistrationViewModel>(viewResult.Model);
             Assert.Equal("testDescription", viewResult.ViewData.ModelState[string.Empty].Errors[0].ErrorMessage);
         }
 
@@ -100,7 +101,7 @@ namespace Hungabor01Website.Tests.Controllers
                 .Returns(Task.FromResult(IdentityResult.Success));
 
             _mockManager.Setup(m => m.LogUserActionToDatabaseAsync(It.IsAny<ApplicationUser>(), It.IsAny<UserActionType>(), It.IsAny<string>())).Verifiable();
-            _mockManager.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _mockManager.Setup(m => m.SendConfirmationEmailAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             CreateController();
@@ -108,15 +109,15 @@ namespace Hungabor01Website.Tests.Controllers
             var mockUrl = new Mock<IUrlHelper>();
             mockUrl.Setup(h => h.Action(It.IsAny<UrlActionContext>()))
                 .Returns("testUrl");
-            registerController.Url = mockUrl.Object;
+            _registerController.Url = mockUrl.Object;
 
-            registerController.ControllerContext.HttpContext = new DefaultHttpContext();
+            _registerController.ControllerContext.HttpContext = new DefaultHttpContext();
 
-            var actionResult = await registerController.Register(new RegisterViewModel());
+            var actionResult = await _registerController.Register(new RegistrationViewModel());
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Null(viewResult.ViewName);
-            Assert.IsType<RegisterViewModel>(viewResult.Model);
+            Assert.IsType<RegistrationViewModel>(viewResult.Model);
             Assert.Equal(RegistrationStrings.NotifyUserConfirmationEmailSentError, viewResult.ViewData.ModelState[string.Empty].Errors[0].ErrorMessage);
             _mockManager.Verify(h => h.LogUserActionToDatabaseAsync(It.IsAny<ApplicationUser>(), It.IsAny<UserActionType>(), It.IsAny<string>()), Times.Once);
         }
@@ -128,7 +129,7 @@ namespace Hungabor01Website.Tests.Controllers
               .Returns(Task.FromResult(IdentityResult.Success));
 
             _mockManager.Setup(h => h.LogUserActionToDatabaseAsync(It.IsAny<ApplicationUser>(), It.IsAny<UserActionType>(), It.IsAny<string>())).Verifiable();
-            _mockManager.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _mockManager.Setup(m => m.SendConfirmationEmailAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
             CreateController();
@@ -136,15 +137,15 @@ namespace Hungabor01Website.Tests.Controllers
             var mockUrl = new Mock<IUrlHelper>();
             mockUrl.Setup(h => h.Action(It.IsAny<UrlActionContext>()))
                 .Returns("testUrl");
-            registerController.Url = mockUrl.Object;
+            _registerController.Url = mockUrl.Object;
 
-            registerController.ControllerContext.HttpContext = new DefaultHttpContext();
+            _registerController.ControllerContext.HttpContext = new DefaultHttpContext();
 
-            var actionResult = await registerController.Register(new RegisterViewModel());
+            var actionResult = await _registerController.Register(new RegistrationViewModel());
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Null(viewResult.ViewName);
-            Assert.IsType<RegisterViewModel>(viewResult.Model);
+            Assert.IsType<RegistrationViewModel>(viewResult.Model);
             Assert.Equal(RegistrationStrings.NotifyUserConfirmationEmailSent, viewResult.ViewData.ModelState[string.Empty].Errors[0].ErrorMessage);
             _mockManager.Verify(h => h.LogUserActionToDatabaseAsync(It.IsAny<ApplicationUser>(), It.IsAny<UserActionType>(), It.IsAny<string>()), Times.Exactly(2));
         }
@@ -158,7 +159,7 @@ namespace Hungabor01Website.Tests.Controllers
         {
             CreateController();
 
-            var actionResult = await registerController.ConfirmEmail(userId, token);
+            var actionResult = await _registerController.ConfirmEmail(userId, token);
 
             var viewResult = Assert.IsType<RedirectToActionResult>(actionResult);
             Assert.Equal("Home", viewResult.ControllerName);
@@ -173,7 +174,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.ConfirmEmail("testUserId", "testToken");
+            var actionResult = await _registerController.ConfirmEmail("testUserId", "testToken");
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Equal("Error", viewResult.ViewName);
@@ -190,7 +191,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.ConfirmEmail("testUserId", "testToken");
+            var actionResult = await _registerController.ConfirmEmail("testUserId", "testToken");
 
             var viewResult = Assert.IsType<ViewResult>(actionResult);
             Assert.Equal("Error", viewResult.ViewName);
@@ -209,7 +210,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.ConfirmEmail("testUserId", "testToken");
+            var actionResult = await _registerController.ConfirmEmail("testUserId", "testToken");
 
             var viewResult = Assert.IsType<RedirectToActionResult>(actionResult);
             Assert.Equal("Home", viewResult.ControllerName);
@@ -225,7 +226,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.IsUsernameInUse("test");
+            var actionResult = await _registerController.IsUsernameInUse("test");
 
             var viewResult = Assert.IsType<JsonResult>(actionResult);
             Assert.True((bool)viewResult.Value);
@@ -238,7 +239,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.IsUsernameInUse("test");
+            var actionResult = await _registerController.IsUsernameInUse("test");
 
             var viewResult = Assert.IsType<JsonResult>(actionResult);
             Assert.Equal(string.Format(RegistrationStrings.UsernameIsTaken, "test"), (string)viewResult.Value);
@@ -251,7 +252,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.IsEmailInUse("test");
+            var actionResult = await _registerController.IsEmailInUse("test");
 
             var viewResult = Assert.IsType<JsonResult>(actionResult);
             Assert.True((bool)viewResult.Value);
@@ -264,7 +265,7 @@ namespace Hungabor01Website.Tests.Controllers
 
             CreateController();
 
-            var actionResult = await registerController.IsEmailInUse("test");
+            var actionResult = await _registerController.IsEmailInUse("test");
 
             var viewResult = Assert.IsType<JsonResult>(actionResult);
             Assert.Equal(string.Format(RegistrationStrings.EmailIsTaken, "test"), (string)viewResult.Value);

@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Database.Core;
+﻿using Database.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +46,6 @@ namespace Hungabor01Website.StartupConfiguration
                 });
 
             Services.ConfigureApplicationCookie(o => o.LoginPath = "/Login/Login");
-        }    
+        }
     }
 }

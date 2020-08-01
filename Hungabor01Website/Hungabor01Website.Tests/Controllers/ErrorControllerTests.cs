@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Constants.Strings;
+﻿using Common.Strings;
 using Hungabor01Website.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,12 +32,12 @@ namespace Hungabor01Website.Tests.Controllers
             Assert.Equal(Strings.Error404, viewResult.ViewData["ErrorMessage"]);
 
             _mockLogger.Verify(l => l.Log(
-              It.IsAny<LogLevel>(),
-              It.IsAny<EventId>(),
-              It.IsAny<It.IsAnyType>(),
-              It.IsAny<Exception>(),
-              (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-              Times.Once);
+                It.IsAny<LogLevel>(),
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
         }
 
         [Fact]
@@ -53,12 +53,12 @@ namespace Hungabor01Website.Tests.Controllers
             Assert.Equal(Strings.UnexpectedError, viewResult.ViewData["ErrorMessage"]);
 
             _mockLogger.Verify(l => l.Log(
-              It.IsAny<LogLevel>(),
-              It.IsAny<EventId>(),
-              It.IsAny<It.IsAnyType>(),
-              It.IsAny<Exception>(),
-              (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-              Times.Once);
+                It.IsAny<LogLevel>(),
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
         }
 
         [Fact]
@@ -73,12 +73,12 @@ namespace Hungabor01Website.Tests.Controllers
             Assert.Equal(Strings.UnexpectedError, viewResult.ViewData["ErrorMessage"]);
 
             _mockLogger.Verify(l => l.Log(
-              It.IsAny<LogLevel>(),
-              It.IsAny<EventId>(),
-              It.IsAny<It.IsAnyType>(),
-              It.IsAny<Exception>(),
-              (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-              Times.Once);
+                It.IsAny<LogLevel>(),
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
         }
     }
 }

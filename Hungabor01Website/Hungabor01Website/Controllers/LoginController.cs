@@ -2,15 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Hungabor01Website.Constants;
 using Microsoft.Extensions.Logging;
-using Hungabor01Website.Database.Core;
-using Hungabor01Website.DataAccess.Managers.Interfaces;
-using Hungabor01Website.BusinessLogic.Enums;
-using Hungabor01Website.Constants.Strings;
+using Database.Core;
+using BusinessLogic.ControllerManagers.Interfaces;
+using Common;
+using Common.Strings;
+using Common.Enums;
 
 namespace Hungabor01Website.Controllers
 {
@@ -18,19 +17,19 @@ namespace Hungabor01Website.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAccountControllersManager _manager;
         private readonly ILogger _logger;
-        private readonly ILoginManager _manager;
 
         public LoginController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<LoginController> logger,
-            ILoginManager manager)
+            IAccountControllersManager manager,
+            ILogger<LoginController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
             _manager = manager;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -54,16 +53,12 @@ namespace Hungabor01Website.Controllers
                 return View(model);
             }
 
-            var user = await _userManager.FindByEmailAsync(model.UsernameOrEmail);
-            if (user == null)
-            {
-                user = await _userManager.FindByNameAsync(model.UsernameOrEmail);
-            }
+            var user = await GetUserFromModel(model);
 
             if (user == null)
-            {
-                ModelState.AddModelError(string.Empty, LoginStrings.InvalidLogin);
+            {                
                 _logger.LogWarning(EventIds.LoginError, LoginStrings.LoginUsernameError);
+                ModelState.AddModelError(string.Empty, LoginStrings.InvalidLogin);
                 return View(model);
             }
 
@@ -75,28 +70,44 @@ namespace Hungabor01Website.Controllers
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
 
-            if (result.Succeeded)
-            {
-                await _manager.LogUserActionToDatabaseAsync(user, UserActionType.Login, LoginStrings.LoginBuiltIn);
-                if (string.IsNullOrWhiteSpace(returnUrl))
-                {
-                    returnUrl = Url.Content("~/");
-                }
-                return LocalRedirect(returnUrl);
-            }
-            else
+            if (!result.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, LoginStrings.InvalidLogin);
                 _logger.LogWarning(EventIds.LoginError, LoginStrings.LoginPasswordError);
                 return View(model);
             }
+
+            await _manager.LogUserActionToDatabaseAsync(user, UserActionType.Login, LoginStrings.LoginBuiltIn);
+            
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                returnUrl = Url.Content("~/");
+            }
+
+            return LocalRedirect(returnUrl);
+        }
+
+        private async Task<ApplicationUser> GetUserFromModel(LoginViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.UsernameOrEmail);
+
+            if (user == null)
+            {
+                user = await _userManager.FindByNameAsync(model.UsernameOrEmail);
+            }
+
+            return user;
         }
 
         [AllowAnonymous]
         public IActionResult ExternalLogin(string provider, string returnUrl, string source)
         {
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Login", new { ReturnUrl = returnUrl, Source = source });
+            var redirectUrl = Url.Action(
+                "ExternalLoginCallback", "Login",
+                new { ReturnUrl = returnUrl, Source = source });
+
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
             return new ChallengeResult(provider, properties);
         }
  
@@ -115,33 +126,29 @@ namespace Hungabor01Website.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Register" , "Register", new RegisterViewModel());
+                    return RedirectToAction("Register" , "Register", new RegistrationViewModel());
                 }
             }
+
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
             var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
             if (signInResult.Succeeded)
-            {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            {                
                 var user = await _userManager.FindByEmailAsync(email);
                 await _manager.LogUserActionToDatabaseAsync(user, UserActionType.Login, string.Format(LoginStrings.LoginExternal, info.LoginProvider));
                 return LocalRedirect(returnUrl);
             }
-            else
+
+            if (email == null)
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                if (email == null)
-                {
-                    ViewBag.ErrorMessage = string.Format(LoginStrings.EmailClaimError, info.LoginProvider);
-                    _logger.LogWarning(EventIds.ExternalLoginCallbackEmailError, string.Format(LoginStrings.ExternalLoginCallbackEmailError, info.LoginProvider));
-                    return View("Error");
-                }
-                else
-                {
-                    return await RegisterAndLoginAsync(returnUrl, info, email);
-                }
+                ViewBag.ErrorMessage = string.Format(LoginStrings.EmailClaimError, info.LoginProvider);
+                _logger.LogWarning(EventIds.ExternalLoginCallbackEmailError, string.Format(LoginStrings.ExternalLoginCallbackEmailError, info.LoginProvider));
+                return View("Error");
             }
+
+            return await RegisterAndLoginUserAsync(returnUrl, info, email);
         }
 
         private async Task<ExternalLoginInfo> CheckExternalErrorsAsync(string remoteError)
@@ -164,14 +171,14 @@ namespace Hungabor01Website.Controllers
 
             if (!string.IsNullOrWhiteSpace(error))
             {
-                ModelState.AddModelError(string.Empty, error);
                 _logger.LogWarning(EventIds.ExternalLoginCallbackError, error);
+                ModelState.AddModelError(string.Empty, error);
             }
 
             return info;
         }
 
-        private async Task<IActionResult> RegisterAndLoginAsync(string returnUrl, ExternalLoginInfo info, string email)
+        private async Task<IActionResult> RegisterAndLoginUserAsync(string returnUrl, ExternalLoginInfo info, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -179,8 +186,8 @@ namespace Hungabor01Website.Controllers
             {
                 user = new ApplicationUser
                 {
-                    UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
-                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                    UserName = email,
+                    Email = email
                 };
 
                 var result = await _userManager.CreateAsync(user);
@@ -193,7 +200,7 @@ namespace Hungabor01Website.Controllers
                 }
                 else
                 {
-                    var model = new RegisterViewModel();
+                    var model = new RegistrationViewModel();
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);

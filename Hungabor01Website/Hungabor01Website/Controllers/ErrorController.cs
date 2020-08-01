@@ -1,5 +1,5 @@
-﻿using Hungabor01Website.Constants;
-using Hungabor01Website.Constants.Strings;
+﻿using Common;
+using Common.Strings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;

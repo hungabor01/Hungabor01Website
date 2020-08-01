@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Database.Core;
+﻿using Database.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
