@@ -33,7 +33,7 @@ namespace Hungabor01Website.Tests.Common
             }
             catch (ArgumentNullException ex)
             {
-                Assert.Equal(nameof(obj), ex.ParamName);
+                Assert.Equal(nameof(obj), ex.Message);
             }
             catch (Exception)
             {

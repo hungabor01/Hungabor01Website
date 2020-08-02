@@ -126,7 +126,7 @@ namespace Hungabor01Website.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Register" , "Register", new RegistrationViewModel());
+                    return RedirectToAction("Registration", "Registration", new RegistrationViewModel());
                 }
             }
 
@@ -204,10 +204,10 @@ namespace Hungabor01Website.Controllers
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
-                        _logger.LogWarning(EventIds.RegisterExternalCreateUserError, string.Format(Strings.AccountError, error.Description, user.UserName));
+                        _logger.LogWarning(EventIds.RegistrationExternalCreateUserError, string.Format(Strings.AccountError, error.Description, user.UserName));
                     }
 
-                    return RedirectToAction("Register", "Register", model);
+                    return RedirectToAction("Registration", "Registration", model);
                 }
             }
 

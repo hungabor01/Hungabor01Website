@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hungabor01Website.Controllers
 {
-    public class ArticlesController : Controller
+    public class ReferenceWorkController : Controller
     {
         [AllowAnonymous]
         public IActionResult Index()

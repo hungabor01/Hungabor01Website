@@ -54,7 +54,7 @@ namespace Hungabor01Website.Controllers
             if (user != null && await _userManager.IsEmailConfirmedAsync(user))
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                var passwordResetLink = Url.Action("ResetPassword", "Profile", new { email = model.Email, token = token }, Request.Scheme);
                 var result = await _manager.SendForgotPasswordEmailAsync(user, passwordResetLink);
 
                 if (result)

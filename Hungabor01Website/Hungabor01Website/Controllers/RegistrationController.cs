@@ -33,14 +33,14 @@ namespace Hungabor01Website.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register()
+        public IActionResult Registration()
         {
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(RegistrationViewModel model)
+        public async Task<IActionResult> Registration(RegistrationViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +59,7 @@ namespace Hungabor01Website.Controllers
             {
                 foreach (var error in result.Errors)
                 {
-                    _logger.LogWarning(EventIds.RegisterCreateUserError, string.Format(Strings.AccountError, error.Description, model.Username));
+                    _logger.LogWarning(EventIds.RegistrationCreateUserError, string.Format(Strings.AccountError, error.Description, model.Username));
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 

@@ -6,12 +6,12 @@ namespace Hungabor01Website.ViewModels
     public class RegistrationViewModel
     {
         [Required]
-        [Remote(action: "IsUsernameInUse", controller: "Register")]
+        [Remote(action: "IsUsernameInUse", controller: "Registration")]
         public string Username { get; set; }
 
         [Required]
         [EmailAddress]
-        [Remote(action: "IsEmailInUse", controller: "Register")]
+        [Remote(action: "IsEmailInUse", controller: "Registration")]
         public string Email { get; set; }
 
         [Required]

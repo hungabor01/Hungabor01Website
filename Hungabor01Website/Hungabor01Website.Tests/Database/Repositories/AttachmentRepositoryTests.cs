@@ -51,9 +51,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("user", ex.ParamName);
+                    Assert.Equal("userId", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -115,9 +115,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("userId", ex.ParamName);
+                    Assert.Equal("userId", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -138,9 +138,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("filename", ex.ParamName);
+                    Assert.Equal("filename", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -285,9 +285,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("user", ex.ParamName);
+                    Assert.Equal("userId", ex.Message);
                 }
                 catch (Exception)
                 {
