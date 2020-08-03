@@ -18,19 +18,19 @@ p {
     display: block;
 }
 
+iframe {
+    max-width: 560px;
+    max-height: 315px;
+    width: 100%;
+    height: -webkit-fill-available;
+}
+
+.row > div {
+    padding: 0px;
+}
+
 .fixedheight {
     min-height: 200px;
-}
-
-.highlightedword {
-    color: green;
-    font-weight: bold;
-}
-
-.supportimage {
-    min-height: 450px;
-    max-width: 450px;
-    padding: 10px;
 }
 
 .studyimages {
@@ -40,54 +40,65 @@ p {
     max-width: 300px;
 }
 
+.highlightedword {
+    color: green;
+    font-weight: bold;
+}
+
+.supportimage {
+    width: inherit;
+    padding: 10px;
+}
+
 .branches {
     float: right;
+    margin: 20px;
+    width: -webkit-fill-available;
     max-width: 500px;
     max-height: 600px;
-    margin: 20px;
 }
 
 .tiles {
-    margin-left: 75px;
+   margin-left: 10px;
 }
 
-.tiles>li {
-    width: 350px;
-    height: 300px;
-    display: inline-block;
-    position: relative;
-    transition: all 0.4s;
-    color: #fff;
-    margin: 10px;
-}
-
-    .tiles > li a {
-        width: 350px;
-        height: 300px;
+    .tiles > li {
+        width: 300px;
+        height: 250px;
         display: inline-block;
         position: relative;
         transition: all 0.4s;
         color: #fff;
-        transform: skew(-30deg, 0deg);
-        background-color: #333;
+        margin: 10px;
     }
 
-.tiles > li a:hover {
-    background-color: #0f3552;
-}
+        .tiles > li a {
+            width: 300px;
+            height: 250px;
+            display: inline-block;
+            position: relative;
+            transition: all 0.4s;
+            color: #fff;
+            transform: skew(-30deg, 0deg);
+            background-color: #333;
+        }
 
-.skewblock {
-    position: absolute;
-    width: 350px;
-    height: 300px;
-    display: inline-block;
-}
+            .tiles > li a:hover {
+                background-color: #0f3552;
+            }
 
 .tile {
     position: absolute;
-    top: 10%;
-    left: 30%;
-    height: 300px;
-    width: 250px;
-    transform: skew(30deg, 0deg);
+    top: 5%;
+    left: 10%;
 }
+
+    .tile ul {
+        list-style-position: inside;
+        padding-left: 0;
+    }
+
+    .tile h2, .tile li {
+        transform: skew(30deg, 0deg);
+        margin-bottom: 5px;
+    }

@@ -69,6 +69,11 @@ main {
         padding-left: 5%;
     }
 
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 #cookieConsent {
     border-radius: 0px;
     background-color: red;

@@ -132,7 +132,7 @@ namespace Hungabor01Website.Controllers
 
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
-            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
 
             if (signInResult.Succeeded)
             {                
@@ -212,7 +212,7 @@ namespace Hungabor01Website.Controllers
             }
 
             await _userManager.AddLoginAsync(user, info);
-            await _signInManager.SignInAsync(user, isPersistent: false);
+            await _signInManager.SignInAsync(user, isPersistent: true);
             await _manager.LogUserActionToDatabaseAsync(user, UserActionType.Login, string.Format(LoginStrings.LoginExternal, info.LoginProvider));
             return LocalRedirect(returnUrl);
         }

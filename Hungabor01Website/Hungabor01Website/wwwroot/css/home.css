@@ -1,4 +1,19 @@
-﻿.banner {
+﻿h1 {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+h3 {
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.banner {
     background-image: url('../images/banner.jpg');
     background-repeat: no-repeat;
     background-size: cover;
@@ -9,13 +24,21 @@
     font-size: 3rem;
 }
 
-.mejpg {
+.me-title {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.me-image {
+    min-height: 300px;
+    min-width: 250px;
+    padding: 0px;
+}
+
+.me-image > img {
     border-radius: 50px;
     border: 2px solid white;
-    max-height: 100%;
-    max-width: 100%;
-    width: auto;
-    height: auto;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -24,82 +47,49 @@
     margin: auto;
 }
 
-.me {
-    min-height: 270px;
-    min-width: 250px;
-}
-
-h1 {
-    margin-bottom: 50px;
-    margin-top: 50px;
-    text-align: center;
-}
-
-h3 {
+.row > div {
     margin-bottom: 20px;
-    display: block;
 }
 
-.contenttitle h3 {
-    margin-left: 15px;
-    margin-right: 15px;
+.topic {
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+    border: 2px solid white;
+    height: 100%;
+    padding: 20px;
 }
 
-.row {
-    margin: 0px;
+    .topic p {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+        color: white;
+        text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+        margin: 0px;
+    }
+
+    .topic h2 {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 600;
+        color: white;
+        text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+    }
+
+#referenceWork {
+    background-image: url('../images/articles.jpg');   
+}
+
+#materials {
+    background-image: url('../images/materials.jpg');   
+}
+
+.row a:hover {
+    text-decoration: none;
 }
 
 .row i {
     color: blue;
     margin-right: 5px;
-}
-
-p {    
-    margin-bottom: 20px;
-    text-align: justify;
-    display: block;
-}
-
-.grid p{
-    text-align: center;
-    font-size: 22px;
-    color: white;
-    margin: 0px;
-}
-
-.grid h2 {
-    text-align: center;
-    font-size: 30px;
-    color: white;
-}
-
-#referenceWork {
-    background-image: url('../images/articles.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 50px;
-    border: 2px solid white;
-    height: 100%;
-    width: 100%;
-    padding: 20px;
-}
-
-#materials {
-    background-image: url('../images/materials.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 50px;
-    border: 2px solid white;
-    height: 100%;
-    padding: 20px;
-}
-
-.contact {
-    margin-top: 20px;
-    margin-left: 15px;
-    margin-right: 15px;
-}
-
-a:hover {
-    text-decoration: none;    
 }

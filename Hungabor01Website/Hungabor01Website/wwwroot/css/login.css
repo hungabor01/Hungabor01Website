@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
 .card {	
-	margin-top: 5%;
+	margin-top: 10%;
 	width: 600px;
 	background-color: rgba(4, 71, 148, 0.5) !important;
 }
