@@ -22,5 +22,11 @@
         "inputFiles": [
             "wwwroot/css/materials.css"
         ]
+    },
+    {
+        "outputFileName": "wwwroot/css/profile.min.css",
+        "inputFiles": [
+            "wwwroot/css/profile.css"
+        ]
     }
 ]

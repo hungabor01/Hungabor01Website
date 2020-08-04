@@ -1,6 +1,6 @@
-﻿using Hungabor01Website.BusinessLogic.Enums;
-using Hungabor01Website.Database.Core.Entities;
-using Hungabor01Website.Database.UnitOfWork;
+﻿using Common.Enums;
+using Database.Core.Entities;
+using Database.UnitOfWork;
 using Hungabor01Website.Tests.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Hungabor01Website.Tests.Database.Repositories
 {
@@ -22,10 +21,6 @@ namespace Hungabor01Website.Tests.Database.Repositories
         private readonly IdentityHelper _identityHelper;
 
         private readonly Attachment _testProfilePicture;
-
-        private static readonly string _filename = "test";
-        private static readonly string _extension = ".jpg";
-        private static readonly byte[] _data = new byte[] { 0x00, 0x01, 0x0f, 0x69, 0xaa, 0xf0, 0xff };
 
         public AttachmentRepositoryTests()
         {
@@ -39,14 +34,14 @@ namespace Hungabor01Website.Tests.Database.Repositories
             {
                 UserId = _identityHelper.TestUser.Id,
                 Type = AttachmentType.ProfilePicture.ToString(),
-                Filename = _filename,
-                Extension = _extension,
-                Data = _data
+                Filename = "test",
+                Extension = ".jpg",
+                Data = new byte[] { 0x00, 0x01, 0x0f, 0x69, 0xaa, 0xf0, 0xff }
             };
         }
 
         [Fact]
-        public async Task GetProfilePictureAsync_UserIsNull_ThrowArgumentNullExceptionAsync()
+        public async Task GetProfilePictureAsync_UserIsNull_ThrowArgumentNullException()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
@@ -56,9 +51,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("user", ex.ParamName);
+                    Assert.Equal("userId", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -68,18 +63,18 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task GetProfilePictureAsync_UserHasNoProfilePicture_ReturnNullAsync()
+        public async Task GetProfilePictureAsync_UserHasNoProfilePicture_ReturnNull()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var data = await unitOfWork.AttachmentRepository.GetProfilePictureAsync(_identityHelper.TestUser);
+                var data = await unitOfWork.AttachmentRepository.GetProfilePictureAsync(_identityHelper.TestUser.Id);
 
                 Assert.Null(data);
             }
         }
 
         [Fact]
-        public async Task GetProfilePictureAsync_UserHasProfilePicture_ReturnDataAsync()
+        public async Task GetProfilePictureAsync_UserHasProfilePicture_ReturnData()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
@@ -89,16 +84,16 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var result = await unitOfWork.AttachmentRepository.GetProfilePictureAsync(_identityHelper.TestUser);
+                var result = await unitOfWork.AttachmentRepository.GetProfilePictureAsync(_identityHelper.TestUser.Id);
                 Assert.NotNull(result);
 
                 var resultData = result.Value.Data;
                 Assert.NotNull(resultData);
-                Assert.Equal(_data, resultData);
+                Assert.Equal(_testProfilePicture.Data, resultData);
 
                 var resultExtension = result.Value.Extension;
                 Assert.NotNull(resultExtension);
-                Assert.Equal(_extension, resultExtension);
+                Assert.Equal(_testProfilePicture.Extension, resultExtension);
             }
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
@@ -109,20 +104,20 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task ChangeProfilePictureAsync_UserIsNull_ThrowArgumentNullExceptionAsync()
+        public async Task UploadProfilePictureAsync_UserIsNull_ThrowArgumentNullException()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
                 try
                 {
-                    var file = new Mock<IFormFile>().Object;
-                    await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(null, file);
+                    await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(
+                        null, _testProfilePicture.Filename + _testProfilePicture.Extension, _testProfilePicture.Data);
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("user", ex.ParamName);
+                    Assert.Equal("userId", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -132,19 +127,20 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task ChangeProfilePictureAsync_FileIsNull_ThrowArgumentNullExceptionAsync()
+        public async Task UploadProfilePictureAsync_FileNameIsNull_ThrowArgumentNullException()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
                 try
                 {
-                    await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(_identityHelper.TestUser, null);
+                    await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(
+                        _identityHelper.TestUser.Id, null, _testProfilePicture.Data);
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("file", ex.ParamName);
+                    Assert.Equal("filename", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -154,7 +150,30 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task ChangeProfilePictureAsync_UserHasNoProfilePicture_NewEntryAddedToDatabaseAsync()
+        public async Task UploadProfilePictureAsync_FileDataIsNull_ThrowArgumentNullException()
+        {
+            using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
+            {
+                try
+                {
+                    await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(
+                        _identityHelper.TestUser.Id, _testProfilePicture.Filename + _testProfilePicture.Extension, null);
+
+                    Assert.True(false, "No exception was thrown.");
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Assert.Equal("fileData", ex.ParamName);
+                }
+                catch (Exception)
+                {
+                    Assert.True(false, "Wrong type of exception was thrown.");
+                }
+            }
+        }
+
+        [Fact]
+        public async Task UploadProfilePictureAsync_UserHasNoProfilePicture_NewEntryAddedToDatabase()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
@@ -167,10 +186,8 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var ms = new MemoryStream(_data);
-                var file = new FormFile(ms, 0, ms.Length, _filename + _extension, _filename + _extension);
-
-                await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(_identityHelper.TestUser, file);
+                await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(
+                    _identityHelper.TestUser.Id, _testProfilePicture.Filename + _testProfilePicture.Extension, _testProfilePicture.Data);
 
                 unitOfWork.Complete();
             }
@@ -184,9 +201,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
                 Assert.Single(profilePictures);
 
                 var profilePicture = profilePictures[0];
-                Assert.Equal(_filename, profilePicture.Filename);
-                Assert.Equal(_extension, profilePicture.Extension);
-                Assert.Equal(_data, profilePicture.Data);
+                Assert.Equal(_testProfilePicture.Filename, profilePicture.Filename);
+                Assert.Equal(_testProfilePicture.Extension, profilePicture.Extension);
+                Assert.Equal(_testProfilePicture.Data, profilePicture.Data);
             }
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
@@ -200,7 +217,7 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task ChangeProfilePictureAsync_UserHasProfilePicture_ProfilePictureIsOverriddenAsync()
+        public async Task UploadProfilePictureAsync_UserHasProfilePicture_ProfilePictureIsOverridden()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
@@ -227,10 +244,8 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var ms = new MemoryStream(_data);
-                var file = new FormFile(ms, 0, ms.Length, _filename + _extension, _filename + _extension);
-
-                await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(_identityHelper.TestUser, file);
+                await unitOfWork.AttachmentRepository.UploadProfilePictureAsync(
+                    _identityHelper.TestUser.Id, _testProfilePicture.Filename + _testProfilePicture.Extension, _testProfilePicture.Data);
 
                 unitOfWork.Complete();
             }
@@ -244,9 +259,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
                 Assert.Single(profilePictures);
 
                 var profilePicture = profilePictures[0];
-                Assert.Equal(_filename, profilePicture.Filename);
-                Assert.Equal(_extension, profilePicture.Extension);
-                Assert.Equal(_data, profilePicture.Data);
+                Assert.Equal(_testProfilePicture.Filename, profilePicture.Filename);
+                Assert.Equal(_testProfilePicture.Extension, profilePicture.Extension);
+                Assert.Equal(_testProfilePicture.Data, profilePicture.Data);
             }
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
@@ -260,7 +275,7 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task DeleteProfilePictureAsync_UserIsNull_ThrowArgumentNullExceptionAsync()
+        public async Task DeleteProfilePictureAsync_UserIsNull_ThrowArgumentNullException()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
@@ -270,9 +285,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                     Assert.True(false, "No exception was thrown.");
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException ex)
                 {
-                    Assert.Equal("user", ex.ParamName);
+                    Assert.Equal("userId", ex.Message);
                 }
                 catch (Exception)
                 {
@@ -282,18 +297,18 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task DeleteProfilePictureAsync_UserHasNoProfilePicture_ReturnFalseAsync()
+        public async Task DeleteProfilePictureAsync_UserHasNoProfilePicture_ReturnFalse()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var result = await unitOfWork.AttachmentRepository.DeleteProfilePictureAsync(_identityHelper.TestUser);
+                var result = await unitOfWork.AttachmentRepository.DeleteProfilePictureAsync(_identityHelper.TestUser.Id);
                 unitOfWork.Complete();
                 Assert.False(result);
             }
         }
 
         [Fact]
-        public async Task DeleteProfilePicture_UserHasProfilePicture_ReturnTrueAsync()
+        public async Task DeleteProfilePicture_UserHasProfilePicture_ReturnTrue()
         {
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
@@ -303,7 +318,7 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var result = await unitOfWork.AttachmentRepository.DeleteProfilePictureAsync(_identityHelper.TestUser);
+                var result = await unitOfWork.AttachmentRepository.DeleteProfilePictureAsync(_identityHelper.TestUser.Id);
                 unitOfWork.Complete();
                 Assert.True(result);
             }

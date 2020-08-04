@@ -1,12 +1,12 @@
-﻿using Hungabor01Website.Database.Repositories.Interfaces;
-using Hungabor01Website.Database.Repositories.Classes;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Hungabor01Website.Database.UnitOfWork;
-using Hungabor01Website.Database.Core;
+using Database.UnitOfWork;
+using Database.Repositories.Interfaces;
+using Database.Repositories.Classes;
+using Database.Core;
 
 namespace Hungabor01Website.StartupConfiguration
 {
@@ -31,13 +31,13 @@ namespace Hungabor01Website.StartupConfiguration
             if (Environment.IsDevelopment())
             {
                 Services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("AppDbContextLocal")),
+                    options.UseSqlServer(Configuration.GetConnectionString("AppDbContextLocal"), b => b.MigrationsAssembly("Hungabor01Website")),
                     ServiceLifetime.Transient);
             }
             else
             {
                 Services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("AppDbContextAzure")),
+                    options.UseSqlServer(Configuration.GetConnectionString("AppDbContextAzure"), b => b.MigrationsAssembly("Hungabor01Website")),
                     ServiceLifetime.Transient);
             }
         }

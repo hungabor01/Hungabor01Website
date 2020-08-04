@@ -21,8 +21,8 @@ body {
     padding-right: 0px;
 }
 
-img {
-    max-height: 50px;
+.navbar-toggler {
+    margin-right: 16px;
 }
 
 .navbar-collapse {
@@ -33,40 +33,93 @@ img {
 }
 
 .collapsing {
-    border-radius: 25px;
-    border: 2px solid white;
+    -webkit-transition: none;
+    transition: none;
 }
 
-.show {
+.show, .collapsing {
     border-radius: 25px;
     border: 2px solid white;
     height: auto;
+    padding: 10px 0px 10px 25px;
+    margin-right: 16px;
 }
 
-.content {
+    .collapsing .ml-auto, .collapsing .ml-auto *,
+    .collapsing .ml-0, .collapsing .ml-0 *,
+    .show .ml-auto, .show .ml-auto *,
+    .show .ml-0, .show .ml-0 * {
+        display: inline;
+        padding-right: 5px;
+    }
+
+#profilePicture {
+    max-height: 50px;
+}
+
+main {
     padding-top: 65px;
-    padding-bottom: 60px;
-    display: inline-block;
+    padding-bottom: 50px;
     width: 100%;
     overflow-x: auto;
 }
 
-    .content>div {
+    main>div {
         padding-right: 5%;
         padding-left: 5%;
     }
 
-.footer {
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+#cookieConsent {
+    border-radius: 0px;
+    background-color: red;
+    color: white;
+    margin: 0px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.alert-text {
+    float: left;
+    width: 50%;
+}
+
+    #cookieConsent a {
+        color: blue;
+        font-weight: bold;
+        text-decoration: underline;
+        margin-left: 10px;
+    }
+
+    #cookieConsent button {
+        color: white;
+        opacity: 1;
+        background-color: red;
+        border: 2px solid white;
+        float: right;
+        height: 80%;
+        position: static;
+    }
+
+        #cookieConsent button:hover {
+            background-color: #0f3552;
+        }        
+
+footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    line-height: 50px;
-    padding-left: 5%;
+    padding: 10px;
     z-index: 10;
     background-color: black;
     border-top: 1px solid #e5e5e5;
+    font-size: 14px;
 }
 
-    .footer a {
-        margin-right: 10px;
+    footer a {
+        margin-left: 10px;
     }

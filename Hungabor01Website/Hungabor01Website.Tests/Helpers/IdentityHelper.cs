@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Database.Core;
+﻿using Database.Core;
 
 namespace Hungabor01Website.Tests.Helpers
 {

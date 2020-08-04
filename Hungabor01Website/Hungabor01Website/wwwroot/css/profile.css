@@ -1,0 +1,22 @@
+﻿h1 {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.upload-picture > label {
+    padding: 0px;
+}
+
+.picture-buttons {
+    display: inline;
+}
+
+.picture-buttons button {
+    max-width: 40%;
+    margin: 0px 10px 0px 10px;
+}
+
+.reset-password {
+    margin-top: 20px;
+}

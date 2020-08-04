@@ -2,8 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
-using Hungabor01Website.BusinessLogic.MessageSenders;
-using Hungabor01Website.BusinessLogic.MessageSenders.EmailValidator;
+using BusinessLogic.Services.Interfaces;
+using BusinessLogic.Services.Classes;
+using BusinessLogic.ControllerManagers.Interfaces;
+using BusinessLogic.ControllerManagers.Classes;
 
 namespace Hungabor01Website.StartupConfiguration
 {
@@ -19,9 +21,11 @@ namespace Hungabor01Website.StartupConfiguration
 
         public override void Configure()
         {
+            Services.AddTransient<IAccountControllersManager, AccountControllersManager>();
+
             Services.AddTransient<IEmailValidator, EmailValidator>();
 
-            Services.AddTransient<IMessageSender, SmtpEmailSender>(s => new SmtpEmailSender(
+            Services.AddTransient<IEmailSender, SmtpEmailSender>(s => new SmtpEmailSender(
                 Configuration.GetValue<string>("EmailSender:host"),
                 Configuration.GetValue<int>("EmailSender:port"),
                 Configuration.GetValue<string>("EmailSender:username"),

@@ -1,4 +1,4 @@
-﻿using Hungabor01Website.Constants.Strings;
+﻿using Common.Strings;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;

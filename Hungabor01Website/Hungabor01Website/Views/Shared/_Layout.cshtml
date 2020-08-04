@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using Hungabor01Website.Database.Core
+@using Database.Core
 @inject SignInManager<ApplicationUser> SignInManager
 
 <!DOCTYPE html>
@@ -8,8 +8,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Hungabor01Website</title>
+    <meta name="description" content="Personal job portfolio website with other useful features and programming tutorials.">
+    <meta name="keywords" content=".Net, C#, ASP.Net, MVC, HTML, CSS, JavaScript, SQL, Tutorial, Portfolio, Job">
+    <meta name="author" content="Gábor Gróf">
     <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
-   
+
+    <meta name="og:title" property="og:title" content="Hungabor01Website by Gábor Gróf">
+    <meta name="og:description " property="og:description " content="Personal job portfolio website with other useful features and programming tutorials.">
+    <meta name="og:image" property="og:image" content="~/images/me.jpg">
+
     <environment include="Development">
         <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
         <link href="~/css/site.css" rel="stylesheet" />
@@ -31,82 +38,85 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary navigation">
-        <a class="navbar-brand" asp-action="Index" asp-controller="Home">
-            <i class="fas fa-home"></i>
-            Home
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary navigation">
+            <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse bg-muted" id="menu">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" asp-action="Index" asp-controller="Articles">
-                        <i class="fas fa-laptop-code"></i>
-                        Articles
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" asp-action="Index" asp-controller="LearningMaterials">
-                        <i class="fas fa-book-open"></i>
-                        Learning Materials
-                    </a>
-                </li>
-            </ul>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <ul class="navbar-nav ml-auto">
+            <div class="collapse navbar-collapse bg-muted" id="menu">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <strong class="nav-link">@User.Identity.Name</strong>
-                    </li>                    
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-action="EditAccount" asp-controller="Account">
-                            <i class="fa fa-cog"></i>
+                        <a class="nav-link" asp-action="Index" asp-controller="ReferenceWork">
+                            <i class="fas fa-laptop-code"></i>
+                            ReferenceWorks
                         </a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" asp-action="Logout" asp-controller="Account">
-                            <i class="fa fa-power-off"></i>
+                        <a class="nav-link" asp-action="Index" asp-controller="LearningMaterials">
+                            <i class="fas fa-book-open"></i>
+                            Learning Materials
                         </a>
                     </li>
                 </ul>
-                <ul class="navbar-nav ml-0">
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-action="EditAccount" asp-controller="Account">
-                            <img src="@Url.Action("GetProfilePicture", "account")" alt="User picture">
-                        </a>
-                    </li>
-                </ul>
-            }
-            else
-            {                
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-action="Login" asp-controller="Login">
-                            <i class="fas fa-sign-in-alt"></i>
-                            Sign In
-                        </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-action="Register" asp-controller="Register">
-                            <i class="fas fa-user-plus"></i>
-                            Sign up
-                        </a>
-                    </li>
-                </ul>
-            }
-        </div>
-    </nav>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <strong class="nav-link">@User.Identity.Name</strong>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-action="EditAccount" asp-controller="Profile">
+                                <i class="fa fa-cog"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-action="Logout" asp-controller="Profile">
+                                <i class="fa fa-power-off"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ml-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-action="EditAccount" asp-controller="Profile">
+                                <img id="profilePicture" src="@Url.Action("GetProfilePicture", "profile")" alt="Profile picture">
+                            </a>
+                        </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-action="Login" asp-controller="Login">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Sign In
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-action="Registration" asp-controller="Registration">
+                                <i class="fas fa-user-plus"></i>
+                                Sign up
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </nav>
+    </header>
 
-    <div class="content">
+    <main>
+        <partial name="_CookieConsentPartial" />
         @RenderBody()
-    </div>
+    </main>
 
-    <div class="footer">        
-        &copy; 2020 - hungabor01.com - <a asp-action="Privacy" asp-controller="Home">Privacy Policy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>        
-    </div>
+    <footer>
+        &copy; 2020 hungabor01.com<a asp-action="Privacy" asp-controller="Home">Privacy</a><a asp-action="Contacts" asp-controller="Home">Contacts</a>
+    </footer>
 
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>

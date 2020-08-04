@@ -1,13 +1,12 @@
-﻿using Hungabor01Website.Database.Repositories.Classes;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using Xunit;
-using System.Collections.Generic;
 using Hungabor01Website.Tests.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
-using Hungabor01Website.BusinessLogic.Enums;
-using Hungabor01Website.Database.UnitOfWork;
+using Common.Enums;
+using Database.Repositories.Classes;
+using Database.UnitOfWork;
 
 namespace Hungabor01Website.Tests.Database.Repositories
 {
@@ -28,7 +27,7 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task LogUserActionToDatabaseAsync_UserIsNull_ThrowArgumentNullExceptionAsync()
+        public async Task LogUserActionToDatabaseAsync_UserIsNull_ThrowArgumentNullException()
         {
             try
             {
@@ -38,9 +37,9 @@ namespace Hungabor01Website.Tests.Database.Repositories
 
                 Assert.True(false, "No exception was thrown.");
             }
-            catch (ArgumentNullException ex)
+            catch (ArgumentException ex)
             {
-                Assert.Equal("user", ex.ParamName);
+                Assert.Equal("userId", ex.Message);
             }
             catch (Exception)
             {
@@ -49,14 +48,14 @@ namespace Hungabor01Website.Tests.Database.Repositories
         }
 
         [Fact]
-        public async Task LogUserActionToDatabaseAsync_UserIsValid_ActionIsLoggedToDatabaseAsync()
+        public async Task LogUserActionToDatabaseAsync_UserIsValid_ActionIsLoggedToDatabase()
         {
             var originalCount = 0;
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
                 originalCount = unitOfWork.AccountHistoryRepository.GetAll().ToList().Count;
 
-                await unitOfWork.AccountHistoryRepository.LogUserActionToDatabaseAsync(_identityHelper.TestUser, UserActionType.None, string.Empty);
+                await unitOfWork.AccountHistoryRepository.LogUserActionToDatabaseAsync(_identityHelper.TestUser.Id, UserActionType.None, string.Empty);
                 unitOfWork.Complete();
             }
 
@@ -65,13 +64,13 @@ namespace Hungabor01Website.Tests.Database.Repositories
                 var newCount = unitOfWork.AccountHistoryRepository.GetAll().ToList().Count;
                 Assert.Equal(originalCount + 1, newCount);
 
-                var records = unitOfWork.AccountHistoryRepository.Find(ah => ah.UserId == _identityHelper.TestUser.Id && ah.Type == UserActionType.None.ToString());
+                var records = unitOfWork.AccountHistoryRepository.Find(ah => ah.UserId == _identityHelper.TestUser.Id && ah.ActionType == UserActionType.None.ToString());
                 Assert.Single(records);
             }
 
             using (var unitOfWork = _serviceProviderHelper.ServiceProvider.GetService<IUnitOfWork>())
             {
-                var record = await unitOfWork.AccountHistoryRepository.SingleOrDefaultAsync(ah => ah.UserId == _identityHelper.TestUser.Id && ah.Type == UserActionType.None.ToString());
+                var record = await unitOfWork.AccountHistoryRepository.SingleOrDefaultAsync(ah => ah.UserId == _identityHelper.TestUser.Id && ah.ActionType == UserActionType.None.ToString());
                 unitOfWork.AccountHistoryRepository.Remove(record);
                 unitOfWork.Complete();
             }

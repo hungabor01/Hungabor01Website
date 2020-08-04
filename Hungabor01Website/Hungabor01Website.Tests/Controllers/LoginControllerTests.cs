@@ -1,6 +1,6 @@
-﻿using Hungabor01Website.Controllers;
-using Hungabor01Website.DataAccess.Managers.Interfaces;
-using Hungabor01Website.Database.Core;
+﻿using BusinessLogic.ControllerManagers.Interfaces;
+using Database.Core;
+using Hungabor01Website.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -11,13 +11,13 @@ namespace Hungabor01Website.Tests.Controllers
 {
     public class LoginControllerTests
     {
-        private LoginController loginController;
+        private LoginController _loginController;
 
         private readonly Mock<UserManager<ApplicationUser>> _mockUserManager;
         private readonly Mock<SignInManager<ApplicationUser>> _mockSignInManager;
+        private readonly Mock<IAccountControllersManager> _mockManager;
         private readonly Mock<ILogger<LoginController>> _mockLogger;
-        private readonly Mock<ILoginManager> _mockManager;
-
+        
         public LoginControllerTests()
         {
             var store = new Mock<IUserStore<ApplicationUser>>();
@@ -33,17 +33,18 @@ namespace Hungabor01Website.Tests.Controllers
                 claims.Object,
                 null, null, null, null);
 
+            _mockManager = new Mock<IAccountControllersManager>();
+
             _mockLogger = new Mock<ILogger<LoginController>>();
-            _mockManager = new Mock<ILoginManager>();
         }
 
         private void CreateController()
         {
-            loginController = new LoginController(
+            _loginController = new LoginController(
                 _mockUserManager.Object,
                 _mockSignInManager.Object,
-                _mockLogger.Object,
-                _mockManager.Object);
+                _mockManager.Object,
+                _mockLogger.Object);
         }
 
         [Fact]

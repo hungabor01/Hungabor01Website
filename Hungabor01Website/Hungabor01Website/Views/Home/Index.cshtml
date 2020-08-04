@@ -17,67 +17,60 @@
 
 <div class="row">
 
-    <div class="col-lg-9">
+    <div class="col-lg-3 me-title">
+        <h1>Gábor Gróf<br>.Net developer</h1>
+    </div>
 
-        <p>I am Gábor Gróf, a hungarian .Net developer. I own, maintain and develop this site.</p>
+    <div class="col-lg-3 me-image">
+        <img src="~/images/me.jpg" />
+    </div>
 
-        <p>I have created this website for multiple reasons.</p>
+    <div class="col-lg-6">
+
+        <h3>The purpose of the website</h3>
 
         <p>
-            First, I have collected here some of my commonly used projects and features as references for my work. These are presented as articles with full source code and brief description.
-            My goal is not to teach these techniques, but to explain the idea and the motivation what and why they are implemented as they are. 
-            So you can think of this section like my job portfolio.
+            I have collected here my projects and implemented features as references of my work and skills. So this website is part of my job portfolio.
         <p />
 
         <p>
-            Secondly, this website is also a reference itself, since it is developed in ASP.Net Core MVC. Therefore, it works like a practice site for me as well.
+            The website is a reference itself, since it is developed in ASP.Net Core MVC. Therefore, it also works like a practice site for me.
         </p>
 
         <p>
-            And lastly, the website contains some functionalities just for me. These are hidden behind registration, but accessible for anyone with login.
-            These features are used in my everyday life, like money management or my collected learning materials. If you think they can be useful for you as well, feel free to use them.
+            Finally, this website contains some functionalities, which I use in my everyday life, like money management or my collected learning materials.
+            These are hidden behind registration, but accessible for anyone who logs in. If you think they can be useful for you as well, feel free to use them.
+        </p>
+
+        <p>
+            If you have any questions or suggestions regarding the website, I welcome every idea. Feel free to contact me any time.
+            Note, that this site is always under development, so the content might change from time to time.
         </p>
 
     </div>
 
-    <div class="col-lg-3 me">
-        <img class="mejpg" src="~/images/me.jpg" />
-    </div>
-
-</div>
-
-<div class="contenttitle">
-    <h3>Current content of the website:</h3>
 </div>
 
 <div class="row">
 
-    <div class="grid col-lg-6">
-        <a asp-action="Index" asp-controller="Articles">
-            <div id="articles">
-                <h2>Articles</h2>
-                <p>Here you can find my collection of a few commonly used features with full source code and brief explanation.</p>
+    <div class="col-lg-6">
+        <a asp-action="Index" asp-controller="ReferenceWork">
+            <div id="referenceWork" class="topic">
+                <h2>Reference Works</h2>
+                <p>My projects and features, which I worked on in my free time or in work.</p>
             </div>
         </a>
     </div>
 
-    <div class="grid col-lg-6">
+    <div class="col-lg-6">
         <a asp-action="Index" asp-controller="LearningMaterials">
-            <div id="materials">
+            <div id="materials" class="topic">
                 <h2>Learning Materials</h2>
                 <p>
-                    I am a self-taught programmer, who learnt almost everything from the internet and with practice.
+                    I am a self-taught programmer, who learnt almost everything from the internet.
                     I have collected the path that I walked through since the beginning and tried to structure these training materials into a big tutorial.
                 </p>
             </div>
         </a>
     </div>
 </div>
-
-<div class="contact">
-    <p>
-        If you have any questions or suggestions regarding the website or the look of it, I welcome every idea. Feel free to contact me any time.
-        Note that this site is always under implementation, so the content might change from time to time.
-    </p>
-</div>
-
