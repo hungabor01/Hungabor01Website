@@ -3,5 +3,114 @@
     ViewData["Title"] = "Web";
 }
 
-    <h1>Coming soon...</h1>
+@section Styles {
+    <environment include="Development">
+        <link href="~/css/materials.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/materials.min.css" rel="stylesheet" />
+    </environment>
+}
+
+<div>
+    <h1>Web development</h1>
+    <p>
+        Nowadays, web development is a very important topic, since the internet is always with us and accessible for everybody from any kind of device.
+        Reading or watching a website does not require any special tool, just internet connection and a web browser. Therefore, software development also goes towards the web technologies.
+        Creating a more complicated web application or website usually requires three types of engineers. Frontend developers build the user interface, backend developers send data to the frontend
+        and persist the data and the dev ops people handle the IT infrastructure and deployment.
+        <br />
+        <iframe src="https://www.youtube.com/embed/pkdgVYehiTE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        So web development has multiple parts, but in this category I will focus on the frontend only. This whole tutorial centered around .Net and mainly the backend, therefore web development
+        in this case means an ASP.Net server with .Net WebAPIs and MsSQL database hosted in Azure and a selected frontend framework. These building blocks are not obligatory, so they can be replaced
+        with other technologies obviously. The frontend of a website has three main basic building block. The html markup, which describes the structure of the website and what is on the website. 
+        The css styling language, which controls the look of the html elements. Finally the javascript programming language, which can handle the user interactions and run client side logic. 
+        All website is built from these, but since the modern websites are more complicated and do a lot, a frontend framework is necessary to organize and manage the frontend code. 
+        So this tutorial goes through the basic three components and arrives to a frontend framework. Beside these, there is a section about how the network communication works.
+    </p>
+    <p>
+        As I mentioned, running a website is not a hard task. Fortunately, developing a website does not require a lot either. You just need a browser to run and debug the website and a text editor.
+        As browser, Chrome, Mozilla or Safari are the most popular choices, but any modern browser can be used. Internet Explorer is not recommended, since the newer features of web development
+        are not working in that. Every browser has a developer tool section, which can be used for debugging and inspecting the layout or monitoring the network.
+        The video below shows the possibilities of the developer tools of Chrome. It requires some html, css, javascript knowledge, so for a total newbie, it is worth waiting with this.
+        <br />
+        <iframe src="https://www.youtube.com/embed/x4q86IjJFag" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        For writing code, any text editor can be used again, but it is highly advised to use <a href="https://code.visualstudio.com/download" target="_blank">Visual Studio Code</a>.
+        VS Code is a lightweight text editor, perfect for web development.
+        <br />
+        <iframe src="https://www.youtube.com/embed/VqCgcpAypFQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </p>
+    <p>
+        First, I would like to mention alternative tutorials and resources. Since web development is very popular and highly demanded, there are lots of tutorials on the internet. 
+        I can recommend a few Youtube channels dedicated to web development, which I like and use. These contain lots of tutorials and courses. 
+        So if somebody wants to follow thier web development roadmap, here are the starting points.
+    </p>
+    <ul>
+        <li>
+            <a href="https://www.youtube.com/channel/UCFbNIlppjAuEX4znoulh0Cw" target="_blank">Web Dev Simplified</a>: 
+            <a href="https://www.youtube.com/watch?v=v0Bkxc3YeIc" target="_blank">How To Become A Web Developer In 2020</a>
+        </li>
+        <li>
+            <a href="https://www.youtube.com/channel/UCSJbGtTlrDami-tDGPUV9-w" target="_blank">Academind</a>: 
+            <a href="https://www.youtube.com/watch?v=2-akTTZyrcM" target="_blank">A Complete Web Development Learning Path</a>
+        </li>
+        <li>
+            <a href="https://www.youtube.com/channel/UC29ju8bIPH5as8OGnQzwJyA" target="_blank">Traversy Media</a>: 
+            <a href="https://www.youtube.com/watch?v=0pThnRneDjw" target="_blank">Web Development In 2020 - A Practical Guide</a> and 
+            a <a href="https://github.com/andrews1022/web-development-2020-course-list" target="_blank">text guide for the channel</a>
+        </li>
+    </ul>
+    <h3>
+        Html
+    </h3>
+    <p>
+
+    </p>
+    <h3>
+        Css
+    </h3>
+    <p>
+
+    </p>
+    <h3>
+        Javascipt
+    </h3>
+    <p>
+
+    </p>
+    <h3>
+        Frontend frameworks
+    </h3>
+    <p>
+
+    </p>
+    <h3>
+        Networking
+    </h3>
+    <p>
+        Networking and how the internet works, is a complicated subject. However, for a developer, it is not necessary to know everything, but a basic knowledge in this field is highly recommended.
+        Here is a quick introduction to understand the big picture of networking.
+        <br />
+        <iframe src="https://www.youtube.com/embed/hJHvdBlSxug" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        And these videos introduce the internet from a web developer's point of view.
+        <br />
+        <iframe src="https://www.youtube.com/embed/e4S8zfLdLgQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        <iframe src="https://www.youtube.com/embed/FTAPjr7vgxE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        Now after the high level overviews, let's dive into more advanced stuff. By advanced, I mean the OSI layers and protocols for each levels.
+        For this, I would recommend a <a href="https://www.pluralsight.com/courses/comptia-network-plus-networking-concepts" target="_blank">Pluralsight course</a>. You can use free sources,
+        like Youtube or other courses on Udemy. The point here is to understand the basic concepts and protocols of each level in the OSI model.
+        <br />
+        With OSI layers, we understand in basics how the internet works. For a developer, the most used feature from the OSI layers is the http protocol.
+        Communication with the server usually happens via http or https requests, respones, so it makes sense to investigate this communication form more.
+        <br />
+        <iframe src="https://www.youtube.com/embed/iYM2zFP3Zn0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        The last topic here is security. 
+    </p>
+</div>
 

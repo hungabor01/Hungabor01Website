@@ -77,14 +77,80 @@
         The technology evolves so quickly, that it is unavoidable to not train yourself continously. Also, like in other professions, there are hard times, when you feel, it is easier to quit.
         In these situations, your passion for coding is what can keep you moving.
     </p>
-    <h3>Working in a company</h3>
+    <h3>Version control</h3>
+    <p>
+        Our last topic here, is version control, source control. While you are working alone, it is fine (not exactly) to keep the code just on your computer. However, once you are working in a team,
+        especially in a locally distributed one, everybody needs access to the code base, maybe even in the same time. Everybody pulls and pushes code to the source code and soon it will be a mess.
+        Therefore, we need something to keep the source code there and manage the code synchronization all the time. Also it would be nice to have a history, when, who and what modified on the code base.
+        This is the purpose of source control systems.
+    </p>
+    <p>
+        There are centralized, like cvs or tfs and distributed systems, like git or mercurial.
+        <a href="https://www.youtube.com/watch?v=Dm2kYvkBS3w" target="_blank">This</a> is a fairly good comparison between the two types. The centralized version can be imagined like if there is a server
+        somewhere on the internet, which stores the files. So basically the program code is in a folder on the server. However, there are usually different versions of the code,
+        so each version (branch) is in its own folder on the server. This means, some codes are duplicated on the server, but this is how centralized source control systems work. When you need
+        a version of the code, you simply download that folder from the server. When you want to change to another version, you have to download a different folder, but whole folder. When you
+        want to commit your changes to the sevrer, you simply upload the changes to the folder of that version. Other developers can do the same thing, but not in the same time with the same branch.
+        This makes the centralized version pretty simple and easy to use, but slow, since it requires downloading the whole code base. In summary, centralized systems are like a folder hierarchy
+        of the versions on a network server.
+    </p>
+    <p>
+        Distributed systems are much like the same, except two things. There is still a server storing the files, but only once.
+        The versions are stored with their changes relative to their base version. So instead of storing the application code files more times,
+        the versions only contain the changes. This makes the whole repository smaller.
+        The other difference in distributed systems is that every client (developer's) machine has the whole repository, because it is relatively small.
+        So changing branches requires no internet, and only the changed files are copied over. Obviously, when you try to interact with the repository in the cloud,
+        it requires internet connection. This makes the distributed version much-much faster. However, a little bit harder to use. Since changing branches in distributed version control systems is
+        relatively fast and cheap, more branches are used, than in case of centralized systems. This results in a more separated and more atomic system, which has more flexibility.
+        Therefore for bigger teams, the distributed systems are probably the better choice.
+        I have to add that in my opinion there is no case where a centralized system should be used over a deistributedd one.
+    </p>
+    <p>
+        <img class="branches" src="~/images/branches.jpg" />
+        Let's talk about git. Git is a distributed version control system, which is free and easy to use and has all the functionailities to be the best choice for personal and business purposes as well.
+        There are certain terms and features when using a source control system, like git.
+        <a href="https://www.youtube.com/watch?v=r50BKIFGCI0&list=PLB5jA40tNf3v1wdyYfxQXgdjPgQvP7Xzg" target="_blank">This</a> is a good playlist explaining the usage and possibilities of git.
+        <br />
+        To create a github account, just go to <a href="https://www.github.com" target="_blank">github.com</a> website, hit sign up and follow the instructions.
+        There are a few interesting things here, when creating a repository. You can initialize your repository with a readme file, which is a brief description about the project.
+        It is highly recommended to create one and write a short introduction about what the repository contains and its purpose for other visitors and for the future you.
+        Repositories usually have a <a href="https://git-scm.com/docs/gitignore" target="_blank">.gitignore</a> file as well.
+        This tells the source control manager, which files to keep track, by excluding the files, which match the pattern of the gitignore.
+        So when you put files into your repository, git will track all of them, unless they are excluded by the pattern of the gitignore. This is useful, because in every programming language,
+        there are generated files, which do not belong to the source code, since that usually contains the minimal file set to build the project. Every programming framework has different gitignore template.
+        You can download a proper .gitignore file from <a href="https://github.com/github/gitignore" target="_blank">here</a>.
+        (The C#, .Net gitignore can be found as VisualStudio.gitignore.)
+        The last important thing at repo creation is the <a href="https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository" target="_blank">license file</a>.
+        Basically a license file just tells others, what they are allowed to do and what not with your code legally.
+        <br />
+        <br />
+        After we created a repository on github, we have only one branch, the master branch. A branch is a copy of the full source code in a certain state. This state is represented as a
+        commit, which is kinda like a savepoint in a game. Later we will code in other branches, which originate from the master branch and keep the master branch as an always ready and official
+        branch. This is our branching strategy for now. This is actually the most simple <a href="https://rollout.io/blog/branching-strategy/" target="_blank">branching strategy</a>, but it is used in companies as well. I won't explain more complicated branching
+        strategies, because if somebody understands this one, can understand the other ones easily. So let's say we have the master branch with a working code and we would like to add some
+        new feature to the project. Therefore, we create a new branch for this feature. When creating a branch, we must choose a base branch for the new branch.
+        The new branch will be the exact copy of the base branch. So we create the feature branch based on the master branch, in our case. At this point, the new branch only exists in the cloud
+        repository. If we already have the repository locally, then we have to fetch the new items from the cloud, if not, when we create the local workspaces, everything up to this point
+        is downloaded and fetched from the cloud. Now we have the new feature branch locally as well, so we can make this branch to the active branch and implement the new feature.
+        After the implementation is done, the source control in the IDE displays the changes. Here we can decide which changes to upload with staging the wanted changes.
+        Here comes the commit, which saves the staged changes to the active branch locally. To upload this commit, we have to push the commit to the cloud and synchronize the cloud and the local workspace.
+        If we go to git now, we will see that the feature branch is updated and git wil tell us that we can merge this new commit to the original branch, which is the master. This is done by a pull request.
+        The pull request is the last check of the code, usually done by another developer of team. After the pull request is accepted, the master branch contains the commit from the feature branch.
+        <br />
+        <br />
+        Git, Azure DevOps and Visual Studio work very well together. The user interfaces are easy to use and understandable. Practice is the best way to get used to the process. For a .Net
+        developer it is highly advised to use these three together for every project. All three are free. The internet is full of tutorials about them, which can be followed,
+        but they can be used by intuition as well.
+        <a href="https://docs.microsoft.com/en-us/azure/devops/repos/git/?view=azure-devops" target="_blank">This</a> is the Microsoft documentation of the collaboration of these three.
+    </p>
+    <h3>Corporate communication</h3>
     <p>
         In companies certain tools are required to comunicate between lots of people or notify them about something, since there are offices in different physicial locations. They are used
         for managing emails, text communication between people and organizing, holding meetings.
         Here is a short list about the most commonly used programs for company communication:
     </p>
     <ul>
-        <li>Outlook: Primary software for emailing or scheduling meetings almost in all companies. <a href="https://www.youtube.com/watch?v=KfVORz5SsaU">Here</a> is a short intro.</li>
+        <li>Outlook: Primary software for emailing or scheduling meetings almost in all companies. <a href="https://www.youtube.com/watch?v=KfVORz5SsaU" target="_blank">Here</a> is a short intro.</li>
         <li>
             Skype, Teams, Slack, Flock: These are the most frequently used programs for instant messaging and holding meetings, video conferences. They have abilities to record meetings or share screen.
             They are very similar to each other.
@@ -95,53 +161,53 @@
         These tools are usually easy to use and learn. So there is no point to spend valuable days on tutorials regarding them, but there are short introductions on youtube,
         just for getting familiar with the use of them. It might help knowing something about theem ahead, so you dont have to put time and energy getting used to them in the first days of work.
     </p>
-    <h5>Scrum methodology</h5>
+    <h3>Scrum methodology</h3>
     <p>
         In a job, people usually work on a project in a team, which means work of more people needs to be organized. This is not an easy task, so there are methodologies for this purpose.
-        This is also important, because in an efficient team the same work can be done in half of the time, than in an ineffective one. In a team, the development,
-        the testing, the release and needs of the customers must be synchronized. Nowadays, the most popular methodology is scrum. Other common methodologies are waterfall and kanban for example.
-        I link here a few good videos about these, but I am going to summarize it briefly as well.
+        This is also important, because in an efficient team the same amount of work can be done in much less time, than in an ineffective one. In a team, the development,
+        the testing, the release and the needs of the customers must be synchronized. Nowadays, the most popular methodology is scrum. Other common methodologies are waterfall and kanban for example.
+        I link here a few good videos about scrum, but I am going to summarize it briefly as well.
     </p>
     <ul>
         <li>
-            <a href="https://www.youtube.com/watch?v=RCJghFbXSPk">What is scrum?</a>
+            <a href="https://www.youtube.com/watch?v=RCJghFbXSPk" target="_blank">What is scrum?</a>
             This youtube channel has more video about the scrum and other methodologies as well.
-            For a better understanding, it might be worth to check the related videos as well. His speed is maybe a little slow, so if you find it boring, just accelerate the video.
+            For a better understanding, it might be worth to check the related videos as well. His speed is maybe a little bit slow, so might want to accelerate the video.
         </li>
         <li>
-            <a href="https://www.youtube.com/watch?v=XU0llRltyFM">Intro to Scrum in Under 10 Minutes</a>
+            <a href="https://www.youtube.com/watch?v=XU0llRltyFM" target="_blank">Intro to Scrum in Under 10 Minutes</a>
             This is another summary about the scrum.
         </li>
         <li>
-            <a href="https://www.youtube.com/watch?v=Z9QbYZh1YXY">What is agile?</a>
+            <a href="https://www.youtube.com/watch?v=Z9QbYZh1YXY" target="_blank">What is agile?</a>
             This describes the principles of agile. Since agile is just a guideline, therefore the video is also a little bit more theoretical, so not directly useful in practice.
         </li>
         <li>
-            <a href="https://www.youtube.com/watch?v=F5QIqFEDv2k">Scrum vs Kanban</a>
+            <a href="https://www.youtube.com/watch?v=F5QIqFEDv2k" target="_blank">Scrum vs Kanban</a>
             This video compares the kanban process to the scrum process. Both are based on agile, so they have similarities.
         </li>
         <li>
-            <a href="https://www.youtube.com/watch?v=egF9-FejbsA">Waterfall vs Agile</a>
-            And this video compares the agile to the waterfall. Waterfall is kinda old-fashioned and nowadays it is used in small projects mostly.
+            <a href="https://www.youtube.com/watch?v=egF9-FejbsA" target="_blank">Waterfall vs Agile</a>
+            And this video compares the agile to the waterfall. Waterfall is kinda the old-fashioned way and nowadays it is used in small projects mostly.
         </li>
-    </ul>   
+    </ul>
     <div class="row">
         <div class="col-xl-8">
             <p>
-                I am going to summarize only the scrum methodology, since that is most important.
-                Scrum is a development process based on the agile principles. Agile is not a methodology, it is a set of principles, which can help an organisation to implement an agile-based
+                I am going to summarize only the scrum methodology, since that is most important. However, you can check more methodologies, if you are interested.
+                Scrum is a development process based on the agile principles. Agile is not a methodology, it is a set of principles, which can help an organization to implement an agile-based
                 methodology. So agile itself is just a guide. Scrum is the methodology, which follows the agile principles.
             </p>
             <p>
                 In a scrum, there are certain roles in a team.
                 <ul>
                     <li>
-                        Project owner: The project owner has contact with the customers, the business analysts, so this person knows what the customer wishes, what the market demands.
-                        Decides the requirements and expectations of a functionality from the customers point of view and prioritize the work. The backlog is usually filled by the project owner with the
+                        Project owner: The project owner has contact with the customers, the business analysts, so this person knows the customer's wishes and what the market demands.
+                        Also decides the requirements and expectations of a functionality from the customers point of view and prioritize the work. The backlog is usually filled by the project owner with the
                         wishlist of the customers and the market.
                     </li>
                     <li>
-                        Scrum master: The scrum master is the leader of the team, but has no real power over the team members, just manages the team, like administrations or scheduling meetings.
+                        Scrum master: The scrum master is the leader of the team, but has no real power over the team members, just manages the team, in administrations, communication or scheduling meetings.
                         The responsibility of the scrum master is the efficiency of the team in the tearms of delivering the features, bug fixes and solve the occuring problems related to the team.
                     </li>
                     <li>
@@ -165,9 +231,9 @@
             </p>
             <p>
                 The scrum methodology works best with visualization. Each sprint has a board, where the user stories are listed with their tasks and their current status. Scrum also requires lots of
-                administration, so usually a tool, an online website is used for this. Probably the best and most common one, especially in Microsoft related workspaces (like .Net) is Azure DevOps or
+                administrations, so usually a tool, an online website is used for this. Probably the best and most common one, especially in Microsoft related workspaces (like .Net) is Azure DevOps or
                 VSTS with the old name. Azure DevOps is free up to five developers, so can be used for personal purposes as well. Easy to use, customizable and nicely designed.
-                You can find a quick intro to Azure DevOps <a href="https://www.youtube.com/watch?v=JhqpF-5E10I">here</a> and <a href="https://www.youtube.com/watch?v=H-R2bCXfz8I">here</a>.
+                You can find a quick intro to Azure DevOps <a href="https://www.youtube.com/watch?v=JhqpF-5E10I" target="_blank">here</a> and <a href="https://www.youtube.com/watch?v=H-R2bCXfz8I" target="_blank">here</a>.
                 Another free website for managing work, is Trello.
             </p>
         </div>
@@ -176,72 +242,5 @@
             <img class="supportimage" src="~/images/scrumcycle.jpg" />
         </div>
     </div>
-    <h5>Version control</h5>
-    <p>
-        Our last topic here, is version control, source control. While you are working alone, it is fine (not exactly) to keep the code just on your computer. However, once you are working in a team,
-        especially in a locally deistributed one, everybody needs access to the code base, maybe even in the same time. Everybody pulls and pushes code to the source code and soon it will be a mess.
-        Therefore, we need something to keep the source code there and manage the code synchronization all the time. Also it would be nice to have a history, when, who and what modified on the code base.
-        This is the purpose of source control systems.
-    </p>
-    <p>
-        There are centralized, like cvs or tfs and distributed systems, like git or mercurial.
-        <a href="https://www.youtube.com/watch?v=Dm2kYvkBS3w">This</a> is a fairly good comparison between the two types. The centralized version can be imagined like if there is a server
-        somewhere on the internet, which stores the files. So basically the program code is in a folder on the server. However, there are usually different versions of the code,
-        so each version (branch) is in its own folder on the server. This means, some codes are duplicated on the server, but this is how centralized source control systems work. When you need
-        a version of the code, you simply download that folder from the server. When you want to change to another version, you have to download a different folder, but whole folder. When you
-        want to commit your changes to the sevrer, you simply upload the changes to the folder of that version. Other developers can do the same thing, but not in the same time with the same branch.
-        This makes the centralized version pretty simple and easy to use, but slow, since it requires downloading the whole code base. In summary, centralized systems are like a folder hierarchy
-        of the versions on a network server.
-    </p>
-    <p>
-        Distributed systems are much like the same, except two things. There is still a server storing the files, but only once. 
-        The versions are stored with their changes relative to the versions. So instead of storing the application code files more, 
-        the versions only contain the changes compared to the other versions. This makes the whole repository smaller. 
-        The other difference in distributed systems is that every client (developer's) machine has the whole repository, because it is relatively small. 
-        So changing branches requires no internet, and only the changed files are copied over. Obviously, when you try to interact with the repository in the cloud, 
-        it requires internet connection. This makes the distributed version much-much faster. However, a little bit harder to use. Since changing branches in distributed version control systems is
-        relatively fast and cheap, more branches are used, than in case of centralized systems. This results in a more separated and more atomic system, which has more flexibility. 
-        Therefore for bigger teams, the distributed systems are probably the better choice. 
-        I have to add that in my opinion there is no case where a centralized system should be used over a deistributedd one.
-    </p>
-    <p>
-        <img class="branches" src="~/images/branches.jpg" />
-        Let's talk about git. Git is a distributed version control system, which is free and easy to use and has all the functionailities to be the best choice for personal and business pirposes as well. 
-        To create a github account, just go to <a href="www.github.com">github.com</a> website, hit sign up and follow the instructions. <a href="https://www.youtube.com/watch?v=6U7_Om4zffM">Here</a>
-        is a short video about the registration and creating the first project. 
-        <br />
-        There are a few interesting things here, when creating a repository. You can initialize your repository with a readme file, which is a brief description about the project. 
-        It is highly recommended to create one and write a short introduction about what the repository contains and its purpose for other visitors and for the future you.
-        Repositories usually have a .gitignore file as well. This tells the source control manager, which files to keep track, by excluding the files, which match the pattern of the gitignore. 
-        So when you put files into your repository, git will track all of them, unless they are excluded by the pattern of the gitignore. This is useful, because in every programming language, 
-        there are generated files, which do not belong to the source code, since that usually contains the minimal file set to build the project. Every programming framework has different gitignore template. 
-        You can download a proper .gitignore file from <a href="https://github.com/github/gitignore">here</a> or learn more about them <a href="https://git-scm.com/docs/gitignore">here</a>.
-        (The C#, .Net gitignore can be found as VisualStudio.gitignore.) The last important thing at repo creation is the license file. You can read about them
-        <a href="https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository">here</a>. 
-        Basically a license file just tells others, what they are allowed to do and what not with your code legally.
-        <br/>
-        There are certain terms and features when using a source control system. I could not find a short, but full video about the topic, so I will explain myself how I think about these things. 
-        There are tons of videos in this topic and after reading and understanding the basics here, I recommend to check a few video to extend the statements here, 
-        because I cover only the most basic sceanrio.
-        This might seem as a complicated topic on the first look, but after getting used to them, they will be very easy and intuitive. However, if there are unclear things,
-        again, the internet can complete the informations.
-        <br/>
-        After we created a repository on github, we have only one branch, the master branch. A branch is a copy of the full source code in a certain state. This state is represented as a
-        commit, which is kinda like a savepoint in a game. Later we will code in other branches, which originate from the master branch and keep the master branch as an always ready and official
-        branch. This is our branching strategy for now. This is actually the most simple branching strategy, but it is used in companies as well. I won't explain more complicated branching
-        strategies, because if somebody understands this one, can understand the other ones easily. So let's say we have the master branch with a working code and we would like to add some
-        new feature to the project. Therefore, we create a new branch for this feature. When creating a branch, we must choose a base branch for the new branch.
-        The new branch will be the exact copy of the base branch. So we create the feature branch based on the master branch, in our case. At this point, the new branch only exists in the cloud
-        repository. If we already have the repository locally, then we have to fetch the new items from the cloud, if not, when we create the local workspaces, everything up to this point
-        is downloaded and fetched from the cloud. Now we have the new feature branch locally as well, so we can make this branch to the active branch and implement the new feature. 
-        After the implementation is done, the source control in the IDE displays the changes. Here we can decide which changes to upload with staging the wanted changes. 
-        Here comes the commit, which saves the staged changes to the active branch locally. To upload this commit, we have to push the commit to the cloud and synchronize the cloud and the local workspace. 
-        If we go to git now, we will see that the feature branch is updated and git wil tell us that we can merge this new commit to the original branch, which is the master. This is done by a pull request. 
-        The pull request is the last check of the code, usually done by another developer of team. After the pull request is accepted, the master branch contains the commit from the feature branch.
-        <br/>
-        Git, Azure DevOps and Visual Studio work very well together. The user inteerfaces are easy to use and understandable. Practice is the best way to get used to the process. For a .Net 
-        developer it is highly advised to use these three together for every project. All three are free. The internet is full of tutorials about them, which can be followed, 
-        but they can be used by intuituin as well.
-    </p>
 </div>
 
